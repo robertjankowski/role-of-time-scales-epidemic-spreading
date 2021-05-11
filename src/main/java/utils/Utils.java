@@ -1,19 +1,21 @@
 package utils;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Random;
+import java.util.Set;
 
 public class Utils {
+    public static <E> E getRandomSetElement(Set<E> set) {
+        return set.stream()
+                .skip(new Random().nextInt(set.size()))
+                .findFirst()
+                .orElse(null);
+    }
 
-    public static <T> List<T> sample(List<T> vals, int n) {
-        Random rand = new Random();
-        List<T> newList = new ArrayList<>();
-        for (int i = 0; i < n; i++) {
-            int randomIndex = rand.nextInt(vals.size());
-            newList.add(vals.get(randomIndex));
-        }
-        return newList;
+    public static <T> Set<T> setDifference(final Set<T> setOne, final Set<T> setTwo) {
+        Set<T> result = new HashSet<T>(setOne);
+        result.removeIf(setTwo::contains);
+        return result;
     }
 
 }
