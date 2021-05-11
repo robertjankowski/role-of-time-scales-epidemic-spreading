@@ -1,0 +1,21 @@
+nAgents: 10000
+nSteps: 200000
+nSaveSteps: 1000
+additionalLinksFraction: 0.01
+virtualLayer: true
+epidemicLayer: false
+comorbidities: false
+qVoterParameters:
+  p: 0.1
+  q: 3
+physicalLayerParameters:
+  beta: 0.5
+  gamma: 0.3
+  mu: 0.9
+  kappa: 0.1
+  maxInfectedTime: 10
+positiveOpinionFraction: 1.0
+infectedFraction: 0.1
+fractionIllnessA: 0.0
+fractionIllnessB: 0.0
+outputFolder: simulations/test

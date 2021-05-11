@@ -13,9 +13,61 @@ package common.parameters;
  * <p>
  * max_infected_time: number of timestamp spends in `I` state (depends on opinion)
  */
-public record PhysicalLayerParameters(double beta,
-                                      double gamma,
-                                      double mu,
-                                      double kappa,
-                                      double maxInfectedTime) {
+public final class PhysicalLayerParameters {
+    private final double beta;
+    private final double gamma;
+    private final double mu;
+    private final double kappa;
+    private final double maxInfectedTime;
+
+    public PhysicalLayerParameters() {
+        this.beta = 0.5;
+        this.gamma = 0.5;
+        this.mu = 0.9;
+        this.kappa = 0.1;
+        this.maxInfectedTime = 10;
+    }
+
+    public PhysicalLayerParameters(double beta,
+                                   double gamma,
+                                   double mu,
+                                   double kappa,
+                                   double maxInfectedTime) {
+        this.beta = beta;
+        this.gamma = gamma;
+        this.mu = mu;
+        this.kappa = kappa;
+        this.maxInfectedTime = maxInfectedTime;
+    }
+
+    public double getBeta() {
+        return beta;
+    }
+
+    public double getGamma() {
+        return gamma;
+    }
+
+    public double getMu() {
+        return mu;
+    }
+
+    public double getKappa() {
+        return kappa;
+    }
+
+    public double getMaxInfectedTime() {
+        return maxInfectedTime;
+    }
+
+    @Override
+    public String toString() {
+        return "PhysicalLayerParameters{" +
+                "beta=" + beta +
+                ", gamma=" + gamma +
+                ", mu=" + mu +
+                ", kappa=" + kappa +
+                ", maxInfectedTime=" + maxInfectedTime +
+                '}';
+    }
 }
