@@ -105,10 +105,10 @@ public class Simulation {
         var agent = agents.get(node);
         if (totalOpinion == q) {
             agent.setOpinion(1);
-            agents.add(node, agent);
+            agents.set(node, agent);
         } else if (totalOpinion == -q) {
             agent.setOpinion(-1);
-            agents.add(node, agent);
+            agents.set(node, agent);
         }
     }
 
@@ -116,7 +116,7 @@ public class Simulation {
         if (random.nextDouble() < 0.5) {
             var agent = agents.get(node);
             agent.flipOpinion();
-            agents.add(node, agent);
+            agents.set(node, agent);
         }
     }
 

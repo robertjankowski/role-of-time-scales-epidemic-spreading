@@ -2,7 +2,7 @@ package common;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import common.parameters.PhysicalLayerParameters;
+import common.parameters.EpidemicLayerParameters;
 import common.parameters.QVoterParameters;
 
 import java.io.File;
@@ -17,7 +17,7 @@ public class SimulationConfig {
     private boolean isVirtualLayer;
     private boolean isComorbidities;
     private QVoterParameters qVoterParameters;
-    private PhysicalLayerParameters physicalLayerParameters;
+    private EpidemicLayerParameters epidemicLayerParameters;
     private double positiveOpinionFraction;
     private double infectedFraction;
     private double fractionIllnessA;
@@ -56,12 +56,11 @@ public class SimulationConfig {
         this.qVoterParameters = qVoterParameters;
     }
 
-    public PhysicalLayerParameters getPhysicalLayerParameters() {
-        return physicalLayerParameters;
+    public void setEpidemicLayerParameters(EpidemicLayerParameters epidemicLayerParameters) {
+        this.epidemicLayerParameters = epidemicLayerParameters;
     }
-
-    public void setPhysicalLayerParameters(PhysicalLayerParameters physicalLayerParameters) {
-        this.physicalLayerParameters = physicalLayerParameters;
+    public EpidemicLayerParameters getEpidemicLayerParameters() {
+        return epidemicLayerParameters;
     }
 
     public int getnSteps() {
@@ -155,7 +154,7 @@ public class SimulationConfig {
                 ", isVirtualLayer=" + isVirtualLayer +
                 ", isComorbidities=" + isComorbidities +
                 ", qVoterParameters=" + qVoterParameters +
-                ", physicalLayerParameters=" + physicalLayerParameters +
+                ", epidemicLayerParameters=" + epidemicLayerParameters +
                 ", positiveOpinionFraction=" + positiveOpinionFraction +
                 ", infectedFraction=" + infectedFraction +
                 ", fractionIllnessA=" + fractionIllnessA +

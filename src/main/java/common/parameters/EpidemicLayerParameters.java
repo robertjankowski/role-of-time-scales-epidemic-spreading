@@ -13,14 +13,14 @@ package common.parameters;
  * <p>
  * max_infected_time: number of timestamp spends in `I` state (depends on opinion)
  */
-public final class PhysicalLayerParameters {
+public final class EpidemicLayerParameters {
     private final double beta;
     private final double gamma;
     private final double mu;
     private final double kappa;
     private final double maxInfectedTime;
 
-    public PhysicalLayerParameters() {
+    public EpidemicLayerParameters() {
         this.beta = 0.5;
         this.gamma = 0.5;
         this.mu = 0.9;
@@ -28,7 +28,7 @@ public final class PhysicalLayerParameters {
         this.maxInfectedTime = 10;
     }
 
-    public PhysicalLayerParameters(double beta,
+    public EpidemicLayerParameters(double beta,
                                    double gamma,
                                    double mu,
                                    double kappa,

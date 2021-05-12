@@ -1,5 +1,5 @@
-nAgents: 10000
-nSteps: 200000
+nAgents: 100000
+nSteps: 2000000
 nSaveSteps: 1000
 additionalLinksFraction: 0.01
 virtualLayer: true
@@ -8,7 +8,7 @@ comorbidities: false
 qVoterParameters:
   p: 0.1
   q: 3
-physicalLayerParameters:
+epidemicLayerParameters:
   beta: 0.5
   gamma: 0.3
   mu: 0.9
