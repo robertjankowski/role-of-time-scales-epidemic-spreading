@@ -12,6 +12,7 @@ public class SimulationConfig {
     private int nAgents;
     private int nSteps;
     private int nSaveSteps;
+    private int nRuns;
     private double additionalLinksFraction;
     private boolean isEpidemicLayer;
     private boolean isVirtualLayer;
@@ -143,12 +144,21 @@ public class SimulationConfig {
         this.nSaveSteps = nSaveSteps;
     }
 
+    public int getnRuns() {
+        return nRuns;
+    }
+
+    public void setnRuns(int nRuns) {
+        this.nRuns = nRuns;
+    }
+
     @Override
     public String toString() {
         return "SimulationConfig{" +
                 "nAgents=" + nAgents +
                 ", nSteps=" + nSteps +
                 ", nSaveSteps=" + nSaveSteps +
+                ", nRuns=" + nRuns +
                 ", additionalLinksFraction=" + additionalLinksFraction +
                 ", isEpidemicLayer=" + isEpidemicLayer +
                 ", isVirtualLayer=" + isVirtualLayer +

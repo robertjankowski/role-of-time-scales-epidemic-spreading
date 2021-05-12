@@ -62,12 +62,6 @@ public final class EpidemicLayerParameters {
 
     @Override
     public String toString() {
-        return "PhysicalLayerParameters{" +
-                "beta=" + beta +
-                ", gamma=" + gamma +
-                ", mu=" + mu +
-                ", kappa=" + kappa +
-                ", maxInfectedTime=" + maxInfectedTime +
-                '}';
+        return "beta=" + beta + "_gamma=" + gamma + "_mu=" + mu + "_kappa=" + kappa + "_maxInfectedTime=" + maxInfectedTime;
     }
 }

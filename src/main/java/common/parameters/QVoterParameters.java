@@ -31,9 +31,6 @@ public final class QVoterParameters {
 
     @Override
     public String toString() {
-        return "QVoterParameters{" +
-                "p=" + p +
-                ", q=" + q +
-                '}';
+        return "p=" + p + "_q=" + q;
     }
 }

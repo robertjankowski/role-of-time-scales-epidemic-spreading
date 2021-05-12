@@ -12,6 +12,8 @@ import org.jgrapht.alg.util.Pair;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
@@ -34,39 +36,54 @@ public class Simulation {
         }
     }
 
-    public void run() {
-        int m = 3;
-        int additionalVirtualLinks = getnAdditionalLinks(config.getnAgents(), config.getAdditionalLinksFraction(), m);
-        // TODO: for now I set to m=3, and p is not working (only BA model)
-        var layers = Network.createBilayerNetwork(config.getnAgents(), additionalVirtualLinks, m, 0.0);
-        var agents = Initializer.initializeAgents(config.getnAgents(),
-                                                  config.getPositiveOpinionFraction(),
-                                                  config.getInfectedFraction(),
-                                                  config.getFractionIllnessA(),
-                                                  config.getFractionIllnessB());
-        System.out.println(config);
-        for (int i = 0; i < config.getnSteps(); i++) {
-            var node = random.nextInt(config.getnAgents());
-            singleStep(node, layers, agents, config);
-            if (i % config.getnSaveSteps() == 0)
-                metrics.add(new AgentMetrics(i, agents));
+    public void run(String fileMetricsPrefix) {
+        for (int i = 0; i < config.getnRuns(); i++) {
+            int m = 3;
+            int additionalVirtualLinks = getnAdditionalLinks(config.getnAgents(), config.getAdditionalLinksFraction(), m);
+            // TODO: for now I set to m=3, and p is not working (only BA model)
+            var layers = Network.createBilayerNetwork(config.getnAgents(), additionalVirtualLinks, m, 0.0);
+            var agents = Initializer.initializeAgents(config.getnAgents(),
+                    config.getPositiveOpinionFraction(),
+                    config.getInfectedFraction(),
+                    config.getFractionIllnessA(),
+                    config.getFractionIllnessB());
+            System.out.println(config);
+            for (int step = 0; step < config.getnSteps(); step++) {
+                var node = random.nextInt(config.getnAgents());
+                singleStep(node, layers, agents, config);
+                if (step % config.getnSaveSteps() == 0)
+                    metrics.add(new AgentMetrics(step, agents));
+            }
+            System.out.println("Finished and saving...");
+            saveMetrics(fileMetricsPrefix, i);
         }
-        System.out.println("Finished");
     }
 
-    public void saveMetrics() {
+    private void saveMetrics(String prefix, int nRun) {
         try {
-            // TODO: save to correct file
-            // prepare custom file name ?
-            List<String> convertedMetrics = metrics.stream().map(AgentMetrics::toString).collect(Collectors.toList());
+            var convertedMetrics = metrics.stream().map(AgentMetrics::toString).collect(Collectors.toList());
             convertedMetrics.add(0,
-                                 "step\tmeanOpinion\tsusceptibleRate\tinfectedRate\tquarantinedRate\trecoveredRate\tdeadRate");
-            FileUtils.writeLines(new File("test_metrics.txt"),
-                                 convertedMetrics);
+                    "step\tmeanOpinion\tsusceptibleRate\tinfectedRate\tquarantinedRate\trecoveredRate\tdeadRate");
+            var path = Paths.get(config.getOutputFolder());
+            Files.createDirectories(path);
+            FileUtils.writeLines(new File(path.toString(), prepareFilename(prefix, nRun)), convertedMetrics);
         } catch (IOException e) {
             e.printStackTrace();
             System.err.println("Unable to write out names");
         }
+    }
+
+    private String prepareFilename(String prefix, int nRun) {
+        return prefix + "_NAGENTS=" + config.getnAgents() +
+                "_NSTEPS=" + config.getnSteps() +
+                "_FRAC_LINKS=" + config.getAdditionalLinksFraction() +
+                "_FRAC_POS_OPINION=" + config.getPositiveOpinionFraction() +
+                "_FRAC_A=" + config.getFractionIllnessA() +
+                "_FRAC_B=" + config.getFractionIllnessB() +
+                "_FRAC_INFECTED=" + config.getInfectedFraction() +
+                "_QVOTER=" + config.getqVoterParameters() +
+                "_EPIDEMIC=" + config.getEpidemicLayerParameters() +
+                "_NRUN=" + nRun + ".tsv";
     }
 
     private void singleStep(int node, Pair<Layer, Layer> layers, List<Agent> agents, SimulationConfig config) {
