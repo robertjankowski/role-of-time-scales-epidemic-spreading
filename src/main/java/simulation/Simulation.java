@@ -43,22 +43,23 @@ public class Simulation {
     public void runAll(String fileMetricsPrefix) {
         if (config.getFirstParameterRange() == null) {
             run(fileMetricsPrefix);
-        }
-        var parametersRange = config.getFirstParameterRange().getParametersRange();
-        var pbb = new ProgressBarBuilder()
-                .setStyle(ProgressBarStyle.COLORFUL_UNICODE_BLOCK)
-                .setTaskName("Running experiment: " + config.getFirstParameterRange().getType());
-        for (double val : ProgressBar.wrap(parametersRange, pbb)) {
-            switch (config.getFirstParameterRange().getType()) {
-                case q -> config.getqVoterParameters().setQ((int) val);
-                case p -> config.getqVoterParameters().setP(val);
-                case beta -> config.getEpidemicLayerParameters().setBeta(val);
-                case gamma -> config.getEpidemicLayerParameters().setGamma(val);
-                case mu -> config.getEpidemicLayerParameters().setMu(val);
-                case kappa -> config.getEpidemicLayerParameters().setKappa(val);
-                case maxInfectedTime -> config.getEpidemicLayerParameters().setMaxInfectedTime(val);
+        } else {
+            var parametersRange = config.getFirstParameterRange().getParametersRange();
+            var pbb = new ProgressBarBuilder()
+                    .setStyle(ProgressBarStyle.COLORFUL_UNICODE_BLOCK)
+                    .setTaskName("Running experiment: " + config.getFirstParameterRange().getType());
+            for (double val : ProgressBar.wrap(parametersRange, pbb)) {
+                switch (config.getFirstParameterRange().getType()) {
+                    case q -> config.getqVoterParameters().setQ((int) val);
+                    case p -> config.getqVoterParameters().setP(val);
+                    case beta -> config.getEpidemicLayerParameters().setBeta(val);
+                    case gamma -> config.getEpidemicLayerParameters().setGamma(val);
+                    case mu -> config.getEpidemicLayerParameters().setMu(val);
+                    case kappa -> config.getEpidemicLayerParameters().setKappa(val);
+                    case maxInfectedTime -> config.getEpidemicLayerParameters().setMaxInfectedTime(val);
+                }
+                run(fileMetricsPrefix);
             }
-            run(fileMetricsPrefix);
         }
     }
 
@@ -70,10 +71,10 @@ public class Simulation {
             // TODO: for now I set to m=3, and p is not working (only BA model)
             var layers = Network.createBilayerNetwork(config.getnAgents(), additionalVirtualLinks, m, 0.0);
             var agents = Initializer.initializeAgents(config.getnAgents(),
-                                                      config.getPositiveOpinionFraction(),
-                                                      config.getInfectedFraction(),
-                                                      config.getFractionIllnessA(),
-                                                      config.getFractionIllnessB());
+                    config.getPositiveOpinionFraction(),
+                    config.getInfectedFraction(),
+                    config.getFractionIllnessA(),
+                    config.getFractionIllnessB());
             for (int step = 0; step < config.getnSteps(); step++) {
                 var node = random.nextInt(config.getnAgents());
                 singleStep(node, layers, agents);
@@ -89,7 +90,7 @@ public class Simulation {
         try {
             var convertedMetrics = metrics.stream().map(AgentMetrics::toString).collect(Collectors.toList());
             convertedMetrics.add(0,
-                                 "step\tmeanOpinion\tsusceptibleRate\tinfectedRate\tquarantinedRate\trecoveredRate\tdeadRate");
+                    "step\tmeanOpinion\tsusceptibleRate\tinfectedRate\tquarantinedRate\trecoveredRate\tdeadRate");
             var path = Paths.get(config.getOutputFolder());
             Files.createDirectories(path);
             FileUtils.writeLines(new File(path.toString(), prepareFilename(prefix, nRun)), convertedMetrics);
@@ -184,22 +185,26 @@ public class Simulation {
             case INFECTED -> {
                 agent.incrementInfectedTime(config);
                 if (agent.getInfectedTime() >= config.getEpidemicLayerParameters().getMaxInfectedTime()) {
-
-                    // TODO: implement transitions
-                    // I --> Q
-
-                    // I --> R
-
-                    // I --> D
+                    if (random.nextDouble() < getCombinedGammaProbability(agent)) {        // I --> Q
+                        agent.setState(AgentState.QUARANTINED);
+                        // TODO: remove all connections when an agent goes to quarantine
+                    } else if (random.nextDouble() < getCombinedMuProbability(agent)) {    // I --> R
+                        agent.setState(AgentState.RECOVERED);
+                    } else if (random.nextDouble() < getCombinedKappaProbability(agent)) { // I --> D
+                        agent.setState(AgentState.DEAD);
+                    }
                 }
             }
             case QUARANTINED -> {
                 // Q --> R
-
-                // Q --> D
+                if (random.nextDouble() < getCombinedMuProbability(agent)) {             // Q --> R
+                    agent.setState(AgentState.RECOVERED);
+                } else if (random.nextDouble() < getCombinedKappaProbability(agent)) {   // Q --> D
+                    agent.setState(AgentState.DEAD);
+                }
             }
         }
-
+        agents.set(node, agent);
     }
 
     private double getCombinedBetaProbability(Agent agent) {
@@ -214,6 +219,32 @@ public class Simulation {
         } else {
             return beta;
         }
+    }
+
+    private double getCombinedGammaProbability(Agent agent) {
+        // I --> Q
+        double gamma = config.getEpidemicLayerParameters().getGamma();
+        return gamma;
+    }
+
+    private double getCombinedMuProbability(Agent agent) {
+        // I --> R
+        double mu = config.getEpidemicLayerParameters().getMu();
+        return mu;
+    }
+
+    private double getCombinedKappaProbability(Agent agent) {
+        double kappa = config.getEpidemicLayerParameters().getKappa();
+        if (config.isComorbidities()) {
+            if (agent.isHasIllnessA()) {
+                kappa *= 2;
+            } else if (agent.isHasIllnessB()) {
+                kappa *= 3;
+            } else if (agent.isHasIllnessA() & agent.isHasIllnessB()) {
+                kappa *= 4;
+            }
+        }
+        return kappa;
     }
 
 

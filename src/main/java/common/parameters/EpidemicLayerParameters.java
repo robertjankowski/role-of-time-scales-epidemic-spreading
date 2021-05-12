@@ -1,5 +1,7 @@
 package common.parameters;
 
+import java.text.DecimalFormat;
+
 /**
  * Parameters of simulation for $$l_1$$ (epidemic) layer
  * <p>
@@ -14,6 +16,8 @@ package common.parameters;
  * max_infected_time: number of timestamp spends in `I` state (depends on opinion)
  */
 public final class EpidemicLayerParameters {
+    private final static DecimalFormat df = new DecimalFormat("0.00");
+
     private double beta;
     private double gamma;
     private double mu;
@@ -82,6 +86,10 @@ public final class EpidemicLayerParameters {
 
     @Override
     public String toString() {
-        return "beta=" + beta + "_gamma=" + gamma + "_mu=" + mu + "_kappa=" + kappa + "_maxInfectedTime=" + maxInfectedTime;
+        return "beta=" + df.format(beta) +
+                "_gamma=" + df.format(gamma) +
+                "_mu=" + df.format(mu) +
+                "_kappa=" + df.format(kappa) +
+                "_maxInfectedTime=" + df.format(maxInfectedTime);
     }
 }
