@@ -14,11 +14,11 @@ package common.parameters;
  * max_infected_time: number of timestamp spends in `I` state (depends on opinion)
  */
 public final class EpidemicLayerParameters {
-    private final double beta;
-    private final double gamma;
-    private final double mu;
-    private final double kappa;
-    private final double maxInfectedTime;
+    private double beta;
+    private double gamma;
+    private double mu;
+    private double kappa;
+    private double maxInfectedTime;
 
     public EpidemicLayerParameters() {
         this.beta = 0.5;
@@ -58,6 +58,26 @@ public final class EpidemicLayerParameters {
 
     public double getMaxInfectedTime() {
         return maxInfectedTime;
+    }
+
+    public void setBeta(double beta) {
+        this.beta = beta;
+    }
+
+    public void setGamma(double gamma) {
+        this.gamma = gamma;
+    }
+
+    public void setMu(double mu) {
+        this.mu = mu;
+    }
+
+    public void setKappa(double kappa) {
+        this.kappa = kappa;
+    }
+
+    public void setMaxInfectedTime(double maxInfectedTime) {
+        this.maxInfectedTime = maxInfectedTime;
     }
 
     @Override

@@ -1,7 +1,9 @@
-nAgents: 10000
-nSteps: 2000000
-nSaveSteps: 1000
-nRuns: 1
+# Check if q-voter model works
+# Test the relation between p and mean opinion at the end of the simulations
+nAgents: 1000
+nSteps: 1000000
+nSaveSteps: 100000
+nRuns: 50
 additionalLinksFraction: 0.01
 virtualLayer: true
 epidemicLayer: false
@@ -19,9 +21,9 @@ positiveOpinionFraction: 1.0
 infectedFraction: 0.1
 fractionIllnessA: 0.0
 fractionIllnessB: 0.0
-outputFolder: simulations/test
+outputFolder: simulations/test_q_voter
 firstParameterRange:
-  start: 0.01
-  end: 0.99
-  count: 10
+  start: 0.0
+  end: 0.50
+  count: 50
   type: p

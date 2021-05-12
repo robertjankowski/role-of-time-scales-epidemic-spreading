@@ -1,5 +1,8 @@
 package common.agent;
 
+import common.SimulationConfig;
+import simulation.Simulation;
+
 public class Agent {
     private static int ID;
     private final int id;
@@ -38,6 +41,28 @@ public class Agent {
 
     public int getInfectedTime() {
         return infectedTime;
+    }
+
+    public void incrementInfectedTime(SimulationConfig config) {
+        if (config.isVirtualLayer()) {
+            // TODO: for now when simulations are preformed on multilayer we do not consider comordibities
+            if (opinion == 1) {
+                infectedTime += 2;
+            } else {
+                infectedTime++;
+            }
+        } else {
+            if (config.isComorbidities()) {
+                // Illness A does not impact the maximum infected time
+                if (hasIllnessB) {
+                    infectedTime += 0.5;
+                } else {
+                    infectedTime++;
+                }
+            } else {
+                infectedTime++;
+            }
+        }
     }
 
     public void setInfectedTime(int infectedTime) {

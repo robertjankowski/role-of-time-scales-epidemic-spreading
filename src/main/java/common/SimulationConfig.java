@@ -3,6 +3,7 @@ package common;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import common.parameters.EpidemicLayerParameters;
+import common.parameters.ParametersRange;
 import common.parameters.QVoterParameters;
 
 import java.io.File;
@@ -24,6 +25,7 @@ public class SimulationConfig {
     private double fractionIllnessA;
     private double fractionIllnessB;
     private String outputFolder;
+    private ParametersRange firstParameterRange;
 
     public SimulationConfig() {
     }
@@ -152,6 +154,14 @@ public class SimulationConfig {
         this.nRuns = nRuns;
     }
 
+    public ParametersRange getFirstParameterRange() {
+        return firstParameterRange;
+    }
+
+    public void setFirstParameterRange(ParametersRange firstParameterRange) {
+        this.firstParameterRange = firstParameterRange;
+    }
+
     @Override
     public String toString() {
         return "SimulationConfig{" +
@@ -170,6 +180,7 @@ public class SimulationConfig {
                 ", fractionIllnessA=" + fractionIllnessA +
                 ", fractionIllnessB=" + fractionIllnessB +
                 ", outputFolder='" + outputFolder + '\'' +
+                ", firstParameterRange=" + firstParameterRange +
                 '}';
     }
 }

@@ -1,5 +1,7 @@
 package common.parameters;
 
+import java.text.DecimalFormat;
+
 /**
  * Parameters of q-voter model in $$l_2$$ (communication) layer
  * <p>
@@ -8,8 +10,10 @@ package common.parameters;
  * q: number of neighbours
  */
 public final class QVoterParameters {
-    private final double p;
-    private final int q;
+    private final static DecimalFormat df = new DecimalFormat("0.00");
+
+    private double p;
+    private int q;
 
     public QVoterParameters() {
         this.p = 0.5;
@@ -29,8 +33,16 @@ public final class QVoterParameters {
         return q;
     }
 
+    public void setP(double p) {
+        this.p = p;
+    }
+
+    public void setQ(int q) {
+        this.q = q;
+    }
+
     @Override
     public String toString() {
-        return "p=" + p + "_q=" + q;
+        return "p=" + df.format(p) + "_q=" + q;
     }
 }
