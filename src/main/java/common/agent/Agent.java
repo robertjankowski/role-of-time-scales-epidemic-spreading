@@ -1,13 +1,12 @@
 package common.agent;
 
 import common.SimulationConfig;
-import simulation.Simulation;
 
 public class Agent {
     private static int ID;
     private final int id;
     private int opinion;
-    private int infectedTime;
+    private double infectedTime;
     private AgentState state;
     private boolean hasIllnessA;
     private boolean hasIllnessB;
@@ -39,7 +38,7 @@ public class Agent {
         }
     }
 
-    public int getInfectedTime() {
+    public double getInfectedTime() {
         return infectedTime;
     }
 
@@ -65,7 +64,7 @@ public class Agent {
         }
     }
 
-    public void setInfectedTime(int infectedTime) {
+    public void setInfectedTime(double infectedTime) {
         this.infectedTime = infectedTime;
     }
 

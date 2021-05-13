@@ -1,0 +1,29 @@
+# Check different comorbidities values
+nAgents: 10000
+nSteps: 400000
+nSaveSteps: 500
+nRuns: 1
+additionalLinksFraction: 0.01
+virtualLayer: false
+epidemicLayer: true
+comorbidities: true
+qVoterParameters:
+  p: 1.0
+  q: 5
+epidemicLayerParameters:
+  beta: 0.3
+  gamma: 0.3
+  mu: 0.9
+  kappa: 0.1
+  maxInfectedTime: 10
+positiveOpinionFraction: 1.0
+# (1) fA = 0.0, fB = 0.0
+# (2) fA = 0.0, fB = 0.5
+# (3) fA = 0.5, fB = 0.0
+# (4) fA = 0.5, fB = 0.5
+# (5) fA = 1.0, fB = 1.0
+infectedFraction: 0.1
+fractionIllnessA: 0.0
+fractionIllnessB: 0.0
+outputFolder: simulations/test_comorbidities
+firstParameterRange: null
