@@ -41,22 +41,29 @@ public class Network {
 
     }
 
+    private static Layer powerlawClusterGraph(int n, int m, double p) {
+        var gen = new PowerlawClusterGraphGenerator<Integer, DefaultEdge>(3, m, n, p);
+        Supplier<DefaultEdge> sEdge = DefaultEdge::new;
+        Layer g = new Layer(SupplierUtil.createIntegerSupplier(), sEdge, false);
+        gen.generateGraph(g);
+        return g;
+    }
+
     /**
      * Create bilayer network with additional `additional_virtual_links` in virtual layer.
      *
      * @param size                   Network size
      * @param additionalVirtualLinks Number of additional edges in virtual layer
-     * @param m                      related to BA model
-     * @param p                      TODO: implement Holme et. al model
+     * @param m                      the number of random edges to add for each new node
+     * @param p                      probability of adding a triangle after adding a random edge
      * @return two layers, epidemic and virtual one
      */
     public static Pair<Layer, Layer> createBilayerNetwork(int size, int additionalVirtualLinks, int m, double p) {
-        Layer l1 ;
+        Layer l1;
         if (p == 0) {
             l1 = barabasiAlbertModel(size, m);
         } else {
-            System.err.println("Not implemented BA model with traid formation");
-            return null;
+            l1 = powerlawClusterGraph(size, m, p);
         }
         var l2 = (Layer) l1.clone();
         addRandomlyEdges(l2, additionalVirtualLinks);

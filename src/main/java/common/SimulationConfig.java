@@ -14,6 +14,8 @@ public class SimulationConfig {
     private int nSteps;
     private int nSaveSteps;
     private int nRuns;
+    private double networkP;
+    private int networkM;
     private double additionalLinksFraction;
     private boolean isEpidemicLayer;
     private boolean isVirtualLayer;
@@ -162,6 +164,22 @@ public class SimulationConfig {
         this.firstParameterRange = firstParameterRange;
     }
 
+    public double getNetworkP() {
+        return networkP;
+    }
+
+    public void setNetworkP(double networkP) {
+        this.networkP = networkP;
+    }
+
+    public int getNetworkM() {
+        return networkM;
+    }
+
+    public void setNetworkM(int networkM) {
+        this.networkM = networkM;
+    }
+
     @Override
     public String toString() {
         return "SimulationConfig{" +
@@ -169,6 +187,8 @@ public class SimulationConfig {
                 ", nSteps=" + nSteps +
                 ", nSaveSteps=" + nSaveSteps +
                 ", nRuns=" + nRuns +
+                ", networkP=" + networkP +
+                ", networkM=" + networkM +
                 ", additionalLinksFraction=" + additionalLinksFraction +
                 ", isEpidemicLayer=" + isEpidemicLayer +
                 ", isVirtualLayer=" + isVirtualLayer +

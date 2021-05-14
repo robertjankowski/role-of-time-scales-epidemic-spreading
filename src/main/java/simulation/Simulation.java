@@ -65,12 +65,12 @@ public class Simulation {
 
     public void run(String fileMetricsPrefix) {
         for (int i = 0; i < config.getnRuns(); i++) {
-            int m = 3;
             int additionalVirtualLinks =
-                    getnAdditionalLinks(config.getnAgents(), config.getAdditionalLinksFraction(), m);
-            // TODO: for now I set to m=3, and p is not working (only BA model)
-            var layers = Network.createBilayerNetwork(config.getnAgents(), additionalVirtualLinks, m, 0.0);
-            var agents = Initializer.initializeAgents(config.getnAgents(),
+                    getnAdditionalLinks(config.getnAgents(), config.getAdditionalLinksFraction(), config.getNetworkM());
+            var layers = Network.createBilayerNetwork(
+                    config.getnAgents(), additionalVirtualLinks, config.getNetworkM(), config.getNetworkP());
+            var agents = Initializer.initializeAgents(
+                    config.getnAgents(),
                     config.getPositiveOpinionFraction(),
                     config.getInfectedFraction(),
                     config.getFractionIllnessA(),
@@ -246,7 +246,6 @@ public class Simulation {
         }
         return kappa;
     }
-
 
     /**
      * @param size                    Size of BA network

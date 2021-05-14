@@ -4,6 +4,8 @@ nAgents: 1000
 nSteps: 1000000
 nSaveSteps: 100000
 nRuns: 50
+networkP: 0.0
+networkM: 3
 additionalLinksFraction: 0.01
 virtualLayer: true
 epidemicLayer: false
