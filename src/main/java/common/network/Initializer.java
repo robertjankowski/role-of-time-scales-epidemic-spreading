@@ -3,6 +3,7 @@ package common.network;
 import common.AgeStatistics;
 import common.agent.Agent;
 import common.agent.AgentState;
+import utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +23,9 @@ public class Initializer {
                                                double positiveOpinionFraction,
                                                double infectedFraction,
                                                double fractionIllnessA,
-                                               double fractionIllnessB) {
+                                               double fractionIllnessB,
+                                               double maxInfectedTimeMean,
+                                               double maxInfectedTimeStd) {
         List<Agent> agents = new ArrayList<>();
         var r = new Random();
         var femalesAges = AgeStatistics.generateAge("", size, "F");
@@ -31,7 +34,8 @@ public class Initializer {
             int opinion = 1;
             if (r.nextDouble() > positiveOpinionFraction)
                 opinion = -1;
-            var agent = new Agent(opinion);
+
+            var agent = new Agent(opinion, Utils.nextGaussian(maxInfectedTimeMean, maxInfectedTimeStd));
 
             // Age based on gender (50/50)
             if (r.nextBoolean()) {

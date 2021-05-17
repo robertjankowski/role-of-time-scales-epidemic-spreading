@@ -56,7 +56,8 @@ public class Simulation {
                     case gamma -> config.getEpidemicLayerParameters().setGamma(val);
                     case mu -> config.getEpidemicLayerParameters().setMu(val);
                     case kappa -> config.getEpidemicLayerParameters().setKappa(val);
-                    case maxInfectedTime -> config.getEpidemicLayerParameters().setMaxInfectedTime(val);
+                    case maxInfectedTimeMean -> config.setMaxInfectedTimeMean(val);
+                    case maxInfectedTimeStd -> config.setMaxInfectedTimeStd(val);
                 }
                 run(fileMetricsPrefix);
             }
@@ -74,7 +75,9 @@ public class Simulation {
                     config.getPositiveOpinionFraction(),
                     config.getInfectedFraction(),
                     config.getFractionIllnessA(),
-                    config.getFractionIllnessB());
+                    config.getFractionIllnessB(),
+                    config.getMaxInfectedTimeMean(),
+                    config.getMaxInfectedTimeStd());
             for (int step = 0; step < config.getnSteps(); step++) {
                 var node = random.nextInt(config.getnAgents());
                 singleStep(node, layers, agents);
@@ -110,6 +113,8 @@ public class Simulation {
                 "_FRAC_INFECTED=" + config.getInfectedFraction() +
                 "_QVOTER=" + config.getqVoterParameters() +
                 "_EPIDEMIC=" + config.getEpidemicLayerParameters() +
+                "_I_TIME_MEAN=" + config.getMaxInfectedTimeMean() +
+                "_I_TIME_STD=" + config.getMaxInfectedTimeStd() +
                 "_NRUN=" + nRun + ".tsv";
     }
 
@@ -184,7 +189,7 @@ public class Simulation {
             }
             case INFECTED -> {
                 agent.incrementInfectedTime(config);
-                if (agent.getInfectedTime() >= config.getEpidemicLayerParameters().getMaxInfectedTime()) {
+                if (agent.getInfectedTime() >= agent.getMaxInfectedTime()) {
                     if (random.nextDouble() < getCombinedGammaProbability(agent)) {        // I --> Q
                         agent.setState(AgentState.QUARANTINED);
                         // TODO: remove all connections when an agent goes to quarantine

@@ -22,26 +22,22 @@ public final class EpidemicLayerParameters {
     private double gamma;
     private double mu;
     private double kappa;
-    private double maxInfectedTime;
 
     public EpidemicLayerParameters() {
         this.beta = 0.5;
         this.gamma = 0.5;
         this.mu = 0.9;
         this.kappa = 0.1;
-        this.maxInfectedTime = 10;
     }
 
     public EpidemicLayerParameters(double beta,
                                    double gamma,
                                    double mu,
-                                   double kappa,
-                                   double maxInfectedTime) {
+                                   double kappa) {
         this.beta = beta;
         this.gamma = gamma;
         this.mu = mu;
         this.kappa = kappa;
-        this.maxInfectedTime = maxInfectedTime;
     }
 
     public double getBeta() {
@@ -60,10 +56,6 @@ public final class EpidemicLayerParameters {
         return kappa;
     }
 
-    public double getMaxInfectedTime() {
-        return maxInfectedTime;
-    }
-
     public void setBeta(double beta) {
         this.beta = beta;
     }
@@ -80,16 +72,11 @@ public final class EpidemicLayerParameters {
         this.kappa = kappa;
     }
 
-    public void setMaxInfectedTime(double maxInfectedTime) {
-        this.maxInfectedTime = maxInfectedTime;
-    }
-
     @Override
     public String toString() {
         return "beta=" + df.format(beta) +
                 "_gamma=" + df.format(gamma) +
                 "_mu=" + df.format(mu) +
-                "_kappa=" + df.format(kappa) +
-                "_maxInfectedTime=" + df.format(maxInfectedTime);
+                "_kappa=" + df.format(kappa);
     }
 }

@@ -6,8 +6,8 @@ networkP: 0.0
 networkM: 3
 additionalLinksFraction: 0.01
 virtualLayer: true
-epidemicLayer: false
-comorbidities: false
+epidemicLayer: true
+comorbidities: true
 qVoterParameters:
   p: 1.0
   q: 3
@@ -16,7 +16,8 @@ epidemicLayerParameters:
   gamma: 0.3
   mu: 0.9
   kappa: 0.1
-  maxInfectedTime: 10
+maxInfectedTimeMean: 10
+maxInfectedTimeStd: 5
 positiveOpinionFraction: 1.0
 infectedFraction: 0.1
 fractionIllnessA: 0.0

@@ -6,6 +6,8 @@ import java.util.Random;
 import java.util.Set;
 
 public class Utils {
+    private static Random r = new Random();
+
     public static <E> E getRandomSetElement(Set<E> set) {
         return set.stream()
                 .skip(new Random().nextInt(set.size()))
@@ -13,7 +15,7 @@ public class Utils {
                 .orElse(null);
     }
 
-    public static<E> E getRandomListElement(List<E> list) {
+    public static <E> E getRandomListElement(List<E> list) {
         return list.stream()
                 .skip(new Random().nextInt(list.size()))
                 .findFirst()
@@ -24,5 +26,9 @@ public class Utils {
         Set<T> result = new HashSet<T>(setOne);
         result.removeIf(setTwo::contains);
         return result;
+    }
+
+    public static double nextGaussian(double mean, double std) {
+        return r.nextGaussian() * std + mean;
     }
 }

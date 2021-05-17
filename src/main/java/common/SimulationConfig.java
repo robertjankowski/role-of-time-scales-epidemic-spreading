@@ -26,11 +26,11 @@ public class SimulationConfig {
     private double infectedFraction;
     private double fractionIllnessA;
     private double fractionIllnessB;
+    private double maxInfectedTimeMean;
+    private double maxInfectedTimeStd;
     private String outputFolder;
     private ParametersRange firstParameterRange;
 
-    public SimulationConfig() {
-    }
 
     public static SimulationConfig loadConfig(String filePath) throws IOException {
         var objectMapper = new ObjectMapper(new YAMLFactory());
@@ -180,6 +180,22 @@ public class SimulationConfig {
         this.networkM = networkM;
     }
 
+    public double getMaxInfectedTimeMean() {
+        return maxInfectedTimeMean;
+    }
+
+    public void setMaxInfectedTimeMean(double maxInfectedTimeMean) {
+        this.maxInfectedTimeMean = maxInfectedTimeMean;
+    }
+
+    public double getMaxInfectedTimeStd() {
+        return maxInfectedTimeStd;
+    }
+
+    public void setMaxInfectedTimeStd(double maxInfectedTimeStd) {
+        this.maxInfectedTimeStd = maxInfectedTimeStd;
+    }
+
     @Override
     public String toString() {
         return "SimulationConfig{" +
@@ -199,6 +215,8 @@ public class SimulationConfig {
                 ", infectedFraction=" + infectedFraction +
                 ", fractionIllnessA=" + fractionIllnessA +
                 ", fractionIllnessB=" + fractionIllnessB +
+                ", maxInfectedTimeMean=" + maxInfectedTimeMean +
+                ", maxInfectedTimeStd=" + maxInfectedTimeStd +
                 ", outputFolder='" + outputFolder + '\'' +
                 ", firstParameterRange=" + firstParameterRange +
                 '}';

@@ -1,5 +1,5 @@
 package common.parameters;
 
 public enum ParameterType {
-    q, p, beta, gamma, mu, kappa, maxInfectedTime
+    q, p, beta, gamma, mu, kappa, maxInfectedTimeMean, maxInfectedTimeStd
 }

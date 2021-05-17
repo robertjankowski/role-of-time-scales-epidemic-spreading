@@ -7,15 +7,17 @@ public class Agent {
     private final int id;
     private int opinion;
     private double infectedTime;
+    private double maxInfectedTime;
     private AgentState state;
     private boolean hasIllnessA;
     private boolean hasIllnessB;
     private int age;
 
-    public Agent(int opinion) {
+    public Agent(int opinion, double maxInfectedTime) {
         this.id = ID++;
         this.opinion = opinion;
         this.infectedTime = 0;
+        this.maxInfectedTime = maxInfectedTime;
         this.state = AgentState.SUSCEPTIBLE;
         this.hasIllnessA = false;
         this.hasIllnessB = false;
@@ -44,23 +46,14 @@ public class Agent {
 
     public void incrementInfectedTime(SimulationConfig config) {
         if (config.isVirtualLayer()) {
-            // TODO: for now when simulations are preformed on multilayer we do not consider comordibities
             if (opinion == 1) {
                 infectedTime += 2;
             } else {
                 infectedTime++;
             }
         } else {
-            if (config.isComorbidities()) {
-                // Illness A does not impact the maximum infected time
-                if (hasIllnessB) {
-                    infectedTime += 0.5;
-                } else {
-                    infectedTime++;
-                }
-            } else {
-                infectedTime++;
-            }
+            // None of illness impact the infected time
+            infectedTime++;
         }
     }
 
@@ -115,5 +108,13 @@ public class Agent {
                 ", hasIllnessB=" + hasIllnessB +
                 ", age=" + age +
                 '}';
+    }
+
+    public double getMaxInfectedTime() {
+        return maxInfectedTime;
+    }
+
+    public void setMaxInfectedTime(double maxInfectedTime) {
+        this.maxInfectedTime = maxInfectedTime;
     }
 }
