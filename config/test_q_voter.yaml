@@ -1,31 +1,32 @@
 # Check if q-voter model works
 # Test the relation between p and mean opinion at the end of the simulations
-nAgents: 1000
-nSteps: 1000000
-nSaveSteps: 100000
-nRuns: 50
+nAgents: 500000
+nSteps: 50000000
+nSaveSteps: 10000
+nRuns: 1
 networkP: 0.0
-networkM: 3
-additionalLinksFraction: 0.01
+networkM: 20
+additionalLinksFraction: 0.0
 virtualLayer: true
 epidemicLayer: false
 comorbidities: false
 qVoterParameters:
-  p: 1.0
-  q: 5
+  p: 0.03
+  q: 8
 epidemicLayerParameters:
   beta: 0.5
   gamma: 0.3
   mu: 0.9
   kappa: 0.1
-  maxInfectedTime: 10
-positiveOpinionFraction: 1.0
+maxInfectedTimeMean: 10
+maxInfectedTimeStd: 10
+positiveOpinionFraction: 0.1
 infectedFraction: 0.1
 fractionIllnessA: 0.0
 fractionIllnessB: 0.0
-outputFolder: simulations/test_q_voter
+outputFolder: simulations/test_q_voter_new
 firstParameterRange:
   start: 0.0
-  end: 0.50
-  count: 50
-  type: p
+  end: 1.0
+  count: 10
+  type: positiveOpinionFraction

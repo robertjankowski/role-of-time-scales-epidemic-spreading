@@ -58,6 +58,7 @@ public class Simulation {
                     case kappa -> config.getEpidemicLayerParameters().setKappa(val);
                     case maxInfectedTimeMean -> config.setMaxInfectedTimeMean(val);
                     case maxInfectedTimeStd -> config.setMaxInfectedTimeStd(val);
+                    case positiveOpinionFraction -> config.setPositiveOpinionFraction(val);
                 }
                 run(fileMetricsPrefix);
             }

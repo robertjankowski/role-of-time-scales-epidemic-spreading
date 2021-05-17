@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 public class Network {
 
     private static Layer barabasiAlbertModel(int n, int m) {
-        var gen = new BarabasiAlbertGraphGenerator<Integer, DefaultEdge>(3, m, n);
+        var gen = new BarabasiAlbertGraphGenerator<Integer, DefaultEdge>(m, m, n);
         Supplier<DefaultEdge> sEdge = DefaultEdge::new;
         Layer g = new Layer(SupplierUtil.createIntegerSupplier(), sEdge, false);
         gen.generateGraph(g);
@@ -42,7 +42,7 @@ public class Network {
     }
 
     private static Layer powerlawClusterGraph(int n, int m, double p) {
-        var gen = new PowerlawClusterGraphGenerator<Integer, DefaultEdge>(3, m, n, p);
+        var gen = new PowerlawClusterGraphGenerator<Integer, DefaultEdge>(m, m, n, p);
         Supplier<DefaultEdge> sEdge = DefaultEdge::new;
         Layer g = new Layer(SupplierUtil.createIntegerSupplier(), sEdge, false);
         gen.generateGraph(g);
