@@ -13,11 +13,14 @@ import me.tongfei.progressbar.ProgressBarStyle;
 import org.apache.commons.io.FileUtils;
 import org.jgrapht.Graphs;
 import org.jgrapht.alg.util.Pair;
+import utils.RandomCollectors;
+import utils.Utils;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
@@ -139,18 +142,11 @@ public class Simulation {
     private void voterActConformity(int node, Layer virtualLayer, List<Agent> agents) {
         int q = config.getqVoterParameters().getQ();
         var neighbours = Graphs.neighborListOf(virtualLayer, node).stream()
+                .collect(RandomCollectors.toImprovedLazyShuffledStream())
                 .limit(q)
-                .collect(Collectors.toList());
-        if (neighbours.isEmpty()) return;
+                .collect(Collectors.toCollection(LinkedList::new));
+        if (neighbours.isEmpty() || neighbours.size() < q) return;
 
-        // If not enough neighbours
-        if (neighbours.size() < q) {
-            // For now if agent does not have enough neighbours it won't change his opinion.
-            // while (...)
-            // var randomNeighbour = random.nextInt(neighbours.size());
-            // neighbours.add(neighbours.get(randomNeighbour));
-            return;
-        }
         int totalOpinion = 0;
         for (int neighbour : neighbours) {
             totalOpinion += agents.get(neighbour).getOpinion();

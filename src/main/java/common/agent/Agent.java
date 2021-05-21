@@ -3,7 +3,7 @@ package common.agent;
 import common.SimulationConfig;
 
 public class Agent {
-    private static int ID;
+    private static int ID = 0;
     private final int id;
     private int opinion;
     private double infectedTime;

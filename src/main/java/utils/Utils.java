@@ -1,9 +1,8 @@
 package utils;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 public class Utils {
     private static Random r = new Random();

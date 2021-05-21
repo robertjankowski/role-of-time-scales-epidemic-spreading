@@ -38,7 +38,6 @@ public class Network {
             g.addEdge(node, newNode);
             counter++;
         }
-
     }
 
     private static Layer powerlawClusterGraph(int n, int m, double p) {
