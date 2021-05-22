@@ -1,9 +1,9 @@
 # Check if q-voter model works
 # Test the relation between p and mean opinion at the end of the simulations
-nAgents: 500000
-nSteps: 50000000
-nSaveSteps: 10000
-nRuns: 1
+nAgents: 10000
+nSteps: 1000000
+nSaveSteps: 1000
+nRuns: 10
 networkP: 0.0
 networkM: 20
 additionalLinksFraction: 0.0
@@ -11,7 +11,7 @@ virtualLayer: true
 epidemicLayer: false
 comorbidities: false
 qVoterParameters:
-  p: 0.06
+  p: 0.1
   q: 8
 epidemicLayerParameters:
   beta: 0.5

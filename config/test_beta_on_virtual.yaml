@@ -1,10 +1,10 @@
 # How the opinion affect the epidemic layer
 nAgents: 10000
-nSteps: 400000
-nSaveSteps: 500
+nSteps: 1000000
+nSaveSteps: 1000
 nRuns: 1
-networkP: 0.0
-networkM: 3
+networkP: 0.8
+networkM: 20
 additionalLinksFraction: 0.01
 virtualLayer: true
 epidemicLayer: true
@@ -13,11 +13,12 @@ qVoterParameters:
   p: 1.0
   q: 4
 epidemicLayerParameters:
-  beta: 0.7 # beta = 0.1, 0.5, 0.7
+  beta: 0.5 # beta = 0.1, 0.5, 0.7
   gamma: 0.3
   mu: 0.9
   kappa: 0.1
-  maxInfectedTime: 10
+maxInfectedTimeMean: 10
+maxInfectedTimeStd: 10
 positiveOpinionFraction: 1.0
 infectedFraction: 0.1
 fractionIllnessA: 0.0
