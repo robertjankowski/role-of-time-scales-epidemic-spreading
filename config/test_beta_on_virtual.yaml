@@ -4,7 +4,7 @@ nSteps: 10000000
 nSaveSteps: 10000
 nRuns: 1
 networkP: 0.8
-networkM: 4
+networkM: 10
 additionalLinksFraction: 0.01
 virtualLayer: true
 epidemicLayer: true
@@ -19,11 +19,11 @@ epidemicLayerParameters:
   kappa: 0.2
 maxInfectedTimeMean: 10
 maxInfectedTimeStd: 5
-positiveOpinionFraction: 0.9 # 0.1 [OK], 0.5 [OK], 0.9
+positiveOpinionFraction: 0.9 # 0.1, 0.5, 0.9
 infectedFraction: 0.1
 fractionIllnessA: 0.0
 fractionIllnessB: 0.0
-outputFolder: simulations/test_beta_on_virtual
+outputFolder: simulations/test_beta_on_virtual_large_m
 firstParameterRange:
   start: 0.0
   end: 0.4
