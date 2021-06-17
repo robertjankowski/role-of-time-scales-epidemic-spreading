@@ -1,6 +1,7 @@
 package common;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.util.PrimitiveArrayBuilder;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import common.parameters.EpidemicLayerParameters;
 import common.parameters.ParametersRange;
@@ -30,7 +31,7 @@ public class SimulationConfig {
     private double maxInfectedTimeStd;
     private String outputFolder;
     private ParametersRange firstParameterRange;
-
+    private ParametersRange secondParameterRange;
 
     public static SimulationConfig loadConfig(String filePath) throws IOException {
         var objectMapper = new ObjectMapper(new YAMLFactory());
@@ -64,6 +65,7 @@ public class SimulationConfig {
     public void setEpidemicLayerParameters(EpidemicLayerParameters epidemicLayerParameters) {
         this.epidemicLayerParameters = epidemicLayerParameters;
     }
+
     public EpidemicLayerParameters getEpidemicLayerParameters() {
         return epidemicLayerParameters;
     }
@@ -196,6 +198,14 @@ public class SimulationConfig {
         this.maxInfectedTimeStd = maxInfectedTimeStd;
     }
 
+    public ParametersRange getSecondParameterRange() {
+        return secondParameterRange;
+    }
+
+    public void setSecondParameterRange(ParametersRange secondParameterRange) {
+        this.secondParameterRange = secondParameterRange;
+    }
+
     @Override
     public String toString() {
         return "SimulationConfig{" +
@@ -219,6 +229,7 @@ public class SimulationConfig {
                 ", maxInfectedTimeStd=" + maxInfectedTimeStd +
                 ", outputFolder='" + outputFolder + '\'' +
                 ", firstParameterRange=" + firstParameterRange +
+                ", secondParameterRange=" + secondParameterRange +
                 '}';
     }
 }

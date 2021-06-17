@@ -7,20 +7,21 @@ import common.agent.AgentState;
 import common.network.Initializer;
 import common.network.Layer;
 import common.network.Network;
+import common.parameters.ParameterType;
 import me.tongfei.progressbar.ProgressBar;
 import me.tongfei.progressbar.ProgressBarBuilder;
 import me.tongfei.progressbar.ProgressBarStyle;
 import org.apache.commons.io.FileUtils;
 import org.jgrapht.Graphs;
 import org.jgrapht.alg.util.Pair;
+import org.jgrapht.graph.DefaultEdge;
 import utils.RandomCollectors;
-import utils.Utils;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
@@ -44,27 +45,42 @@ public class Simulation {
     }
 
     public void runAll(String fileMetricsPrefix) {
-        if (config.getFirstParameterRange() == null) {
+        if (config.getFirstParameterRange() == null && config.getSecondParameterRange() == null) {
             run(fileMetricsPrefix);
-        } else {
+        } else if (config.getFirstParameterRange() != null && config.getSecondParameterRange() == null) {
             var parametersRange = config.getFirstParameterRange().getParametersRange();
+            var type = config.getFirstParameterRange().getType();
+            runAllByParameter(parametersRange, type, fileMetricsPrefix);
+        } else if (config.getSecondParameterRange() != null && config.getFirstParameterRange() == null) {
+            var parameterRange = config.getSecondParameterRange().getParametersRange();
+            var type = config.getSecondParameterRange().getType();
+            runAllByParameter(parameterRange, type, fileMetricsPrefix);
+        } else {
+            // run grid search
+            var firstParameterRange = config.getFirstParameterRange().getParametersRange();
+            var secondParameterRange = config.getSecondParameterRange().getParametersRange();
             var pbb = new ProgressBarBuilder()
                     .setStyle(ProgressBarStyle.COLORFUL_UNICODE_BLOCK)
-                    .setTaskName("Running experiment: " + config.getFirstParameterRange().getType());
-            for (double val : ProgressBar.wrap(parametersRange, pbb)) {
-                switch (config.getFirstParameterRange().getType()) {
-                    case q -> config.getqVoterParameters().setQ((int) val);
-                    case p -> config.getqVoterParameters().setP(val);
-                    case beta -> config.getEpidemicLayerParameters().setBeta(val);
-                    case gamma -> config.getEpidemicLayerParameters().setGamma(val);
-                    case mu -> config.getEpidemicLayerParameters().setMu(val);
-                    case kappa -> config.getEpidemicLayerParameters().setKappa(val);
-                    case maxInfectedTimeMean -> config.setMaxInfectedTimeMean(val);
-                    case maxInfectedTimeStd -> config.setMaxInfectedTimeStd(val);
-                    case positiveOpinionFraction -> config.setPositiveOpinionFraction(val);
+                    .setTaskName("Running experiment: " + config.getFirstParameterRange().getType() +
+                            " and " + config.getSecondParameterRange().getType());
+            for (double x : ProgressBar.wrap(firstParameterRange, pbb)) {
+                for (double y : secondParameterRange) {
+                    updateParameter(x, config.getFirstParameterRange().getType());
+                    updateParameter(y, config.getSecondParameterRange().getType());
+                    run(fileMetricsPrefix);
                 }
-                run(fileMetricsPrefix);
             }
+
+        }
+    }
+
+    private void runAllByParameter(List<Double> parametersRange, ParameterType type, String fileMetricsPrefix) {
+        var pbb = new ProgressBarBuilder()
+                .setStyle(ProgressBarStyle.COLORFUL_UNICODE_BLOCK)
+                .setTaskName("Running experiment: " + config.getFirstParameterRange().getType());
+        for (double val : ProgressBar.wrap(parametersRange, pbb)) {
+            updateParameter(val, type);
+            run(fileMetricsPrefix);
         }
     }
 
@@ -90,6 +106,20 @@ public class Simulation {
             }
             saveMetrics(fileMetricsPrefix, i);
             metrics.clear();
+        }
+    }
+
+    private void updateParameter(double x, ParameterType type) {
+        switch (type) {
+            case q -> config.getqVoterParameters().setQ((int) x);
+            case p -> config.getqVoterParameters().setP(x);
+            case beta -> config.getEpidemicLayerParameters().setBeta(x);
+            case gamma -> config.getEpidemicLayerParameters().setGamma(x);
+            case mu -> config.getEpidemicLayerParameters().setMu(x);
+            case kappa -> config.getEpidemicLayerParameters().setKappa(x);
+            case maxInfectedTimeMean -> config.setMaxInfectedTimeMean(x);
+            case maxInfectedTimeStd -> config.setMaxInfectedTimeStd(x);
+            case positiveOpinionFraction -> config.setPositiveOpinionFraction(x);
         }
     }
 
@@ -189,7 +219,16 @@ public class Simulation {
                 if (agent.getInfectedTime() >= agent.getMaxInfectedTime()) {
                     if (random.nextDouble() < getCombinedGammaProbability(agent)) {        // I --> Q
                         agent.setState(AgentState.QUARANTINED);
-                        // TODO: remove all connections when an agent goes to quarantine
+                        // Remove all links of an agent on both layers
+                        var virtualLayer = layers.getSecond();
+                        var edgesToRemove = new ArrayList<>(virtualLayer.edgesOf(node));
+                        for (DefaultEdge defaultEdge : edgesToRemove) {
+                            virtualLayer.removeEdge(defaultEdge);
+                        }
+                        edgesToRemove = new ArrayList<>(epidemicLayer.edgesOf(node));
+                        for (DefaultEdge defaultEdge : edgesToRemove) {
+                            epidemicLayer.removeEdge(defaultEdge);
+                        }
                     } else if (random.nextDouble() < getCombinedMuProbability(agent)) {    // I --> R
                         agent.setState(AgentState.RECOVERED);
                     } else if (random.nextDouble() < getCombinedKappaProbability(agent)) { // I --> D

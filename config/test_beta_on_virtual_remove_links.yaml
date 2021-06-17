@@ -1,0 +1,38 @@
+# How the opinion affect the epidemic layer
+nAgents: 100000
+nSteps: 10000000
+nSaveSteps: 10000
+nRuns: 1
+networkP: 0.8
+networkM: 10
+additionalLinksFraction: 0.01
+virtualLayer: true
+epidemicLayer: true
+comorbidities: false
+qVoterParameters:
+  p: 1.0
+  q: 6
+epidemicLayerParameters:
+  beta: 0.9 # beta = 0.1, 0.5, 0.9
+  gamma: 0.5
+  mu: 0.8
+  kappa: 0.2
+maxInfectedTimeMean: 10
+maxInfectedTimeStd: 5
+positiveOpinionFraction: 0.0
+infectedFraction: 0.1
+fractionIllnessA: 0.0
+fractionIllnessB: 0.0
+outputFolder: simulations/test_beta_on_virtual_large_m_remove_links
+firstParameterRange:
+  start: 0.0
+  end: 0.4
+  count: 11
+  vals: null
+  type: p
+secondParameterRange:
+  start: 0.0
+  end: 1.0
+  count: 3
+  vals: [0.1, 0.5, 0.9]
+  type: positiveOpinionFraction
