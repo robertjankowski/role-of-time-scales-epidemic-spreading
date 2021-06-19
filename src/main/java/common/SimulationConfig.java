@@ -32,6 +32,8 @@ public class SimulationConfig {
     private String outputFolder;
     private ParametersRange firstParameterRange;
     private ParametersRange secondParameterRange;
+    private int nQVoterPerStep;
+    private boolean isLinksRemoval;
 
     public static SimulationConfig loadConfig(String filePath) throws IOException {
         var objectMapper = new ObjectMapper(new YAMLFactory());
@@ -206,6 +208,22 @@ public class SimulationConfig {
         this.secondParameterRange = secondParameterRange;
     }
 
+    public int getnQVoterPerStep() {
+        return nQVoterPerStep;
+    }
+
+    public void setnQVoterPerStep(int nQVoterPerStep) {
+        this.nQVoterPerStep = nQVoterPerStep;
+    }
+
+    public boolean isLinksRemoval() {
+        return isLinksRemoval;
+    }
+
+    public void setLinksRemoval(boolean linksRemoval) {
+        isLinksRemoval = linksRemoval;
+    }
+
     @Override
     public String toString() {
         return "SimulationConfig{" +
@@ -230,6 +248,8 @@ public class SimulationConfig {
                 ", outputFolder='" + outputFolder + '\'' +
                 ", firstParameterRange=" + firstParameterRange +
                 ", secondParameterRange=" + secondParameterRange +
+                ", nQVoterPerStep=" + nQVoterPerStep +
+                ", isLinksRemoval=" + isLinksRemoval +
                 '}';
     }
 }

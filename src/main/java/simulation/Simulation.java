@@ -154,7 +154,10 @@ public class Simulation {
 
     private void singleStep(int node, Pair<Layer, Layer> layers, List<Agent> agents) {
         if (config.isVirtualLayer()) {
-            virtualLayerStep(node, layers, agents);
+            // Assumption: an agent could send more messages than meet people in one timestamp.
+            for (int i = 0; i < config.getnQVoterPerStep(); i++) {
+                virtualLayerStep(node, layers, agents);
+            }
         }
         if (config.isEpidemicLayer()) {
             epidemicLayerStep(node, layers, agents);
@@ -206,8 +209,7 @@ public class Simulation {
             case SUSCEPTIBLE -> {
                 for (int neighbor : Graphs.neighborListOf(epidemicLayer, node)) {
                     if (agents.get(neighbor).getState() == AgentState.INFECTED) {
-                        // S --> I
-                        if (random.nextDouble() < getCombinedBetaProbability(agent)) {
+                        if (random.nextDouble() < getCombinedBetaProbability(agent)) {     // S --> I
                             agent.setState(AgentState.INFECTED);
                             break;
                         }
@@ -219,15 +221,8 @@ public class Simulation {
                 if (agent.getInfectedTime() >= agent.getMaxInfectedTime()) {
                     if (random.nextDouble() < getCombinedGammaProbability(agent)) {        // I --> Q
                         agent.setState(AgentState.QUARANTINED);
-                        // Remove all links of an agent on both layers
-                        var virtualLayer = layers.getSecond();
-                        var edgesToRemove = new ArrayList<>(virtualLayer.edgesOf(node));
-                        for (DefaultEdge defaultEdge : edgesToRemove) {
-                            virtualLayer.removeEdge(defaultEdge);
-                        }
-                        edgesToRemove = new ArrayList<>(epidemicLayer.edgesOf(node));
-                        for (DefaultEdge defaultEdge : edgesToRemove) {
-                            epidemicLayer.removeEdge(defaultEdge);
+                        if (config.isLinksRemoval()) {
+                            removeLinksBothLayers(node, layers);
                         }
                     } else if (random.nextDouble() < getCombinedMuProbability(agent)) {    // I --> R
                         agent.setState(AgentState.RECOVERED);
@@ -246,6 +241,20 @@ public class Simulation {
             }
         }
         agents.set(node, agent);
+    }
+
+    private void removeLinksBothLayers(int node, Pair<Layer, Layer> layers) {
+        var epidemicLayer = layers.getFirst();
+        var virtualLayer = layers.getSecond();
+        removeEdges(node, epidemicLayer);
+        removeEdges(node, virtualLayer);
+    }
+
+    private void removeEdges(int node, Layer layer) {
+        var edgesToRemove = new ArrayList<>(layer.edgesOf(node));
+        for (var edge : edgesToRemove) {
+            layer.removeEdge(edge);
+        }
     }
 
     private double getCombinedBetaProbability(Agent agent) {
