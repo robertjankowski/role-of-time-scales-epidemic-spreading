@@ -1,11 +1,17 @@
 package common.network;
 
+import org.jgrapht.alg.scoring.ClusteringCoefficient;
 import org.jgrapht.alg.util.Pair;
 import org.jgrapht.generate.BarabasiAlbertGraphGenerator;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.util.SupplierUtil;
 import utils.Utils;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.List;
+import java.util.Objects;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -67,5 +73,9 @@ public class Network {
         var l2 = (Layer) l1.clone();
         addRandomlyEdges(l2, additionalVirtualLinks);
         return new Pair<>(l1, l2);
+    }
+
+    public static List<Integer> getDegrees(Layer l) {
+        return l.vertexSet().stream().map(l::degreeOf).collect(Collectors.toList());
     }
 }

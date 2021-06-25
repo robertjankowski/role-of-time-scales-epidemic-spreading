@@ -120,6 +120,7 @@ public class Simulation {
             case maxInfectedTimeMean -> config.setMaxInfectedTimeMean(x);
             case maxInfectedTimeStd -> config.setMaxInfectedTimeStd(x);
             case positiveOpinionFraction -> config.setPositiveOpinionFraction(x);
+            case networkP -> config.setNetworkP(x);
         }
     }
 
@@ -140,6 +141,7 @@ public class Simulation {
     private String prepareFilename(String prefix, int nRun) {
         return prefix + "_NAGENTS=" + config.getnAgents() +
                 "_NSTEPS=" + config.getnSteps() +
+                "_NETWORKP=" + config.getNetworkP() +
                 "_FRAC_LINKS=" + config.getAdditionalLinksFraction() +
                 "_FRAC_POS_OPINION=" + config.getPositiveOpinionFraction() +
                 "_FRAC_A=" + config.getFractionIllnessA() +
