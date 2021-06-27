@@ -2,7 +2,7 @@ import simulation.Simulation;
 
 public class Main {
     public static void main(String[] args) {
-        Simulation simulation = new Simulation("config/test_beta_on_virtual_network_topology.yaml");
-        simulation.runAll("");
+        Simulation simulation = new Simulation("config/example_config.yaml");
+        simulation.runAll("", true);
     }
 }

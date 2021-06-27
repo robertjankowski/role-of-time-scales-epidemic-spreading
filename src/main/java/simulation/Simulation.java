@@ -25,17 +25,22 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 
 public class Simulation {
     private SimulationConfig config;
-    private List<AgentMetrics> metrics;
     private Random random;
+    private static final int N_THREADS = Runtime.getRuntime().availableProcessors();
+    private static final ExecutorService executor = Executors.newFixedThreadPool(N_THREADS);
+    private static final ReentrantLock lock = new ReentrantLock();
 
     public Simulation(String configPath) {
         try {
             config = SimulationConfig.loadConfig(configPath);
-            metrics = new LinkedList<>();
             random = new Random();
         } catch (IOException e) {
             System.err.println("Could not load simulation config. Exiting");
@@ -44,9 +49,9 @@ public class Simulation {
         }
     }
 
-    public void runAll(String fileMetricsPrefix) {
+    public void runAll(String fileMetricsPrefix, boolean isMultithreaded) {
         if (config.getFirstParameterRange() == null && config.getSecondParameterRange() == null) {
-            run(fileMetricsPrefix);
+            run(fileMetricsPrefix, config);
         } else if (config.getFirstParameterRange() != null && config.getSecondParameterRange() == null) {
             var parametersRange = config.getFirstParameterRange().getParametersRange();
             var type = config.getFirstParameterRange().getType();
@@ -65,12 +70,29 @@ public class Simulation {
                             " and " + config.getSecondParameterRange().getType());
             for (double x : ProgressBar.wrap(firstParameterRange, pbb)) {
                 for (double y : secondParameterRange) {
-                    updateParameter(x, config.getFirstParameterRange().getType());
-                    updateParameter(y, config.getSecondParameterRange().getType());
-                    run(fileMetricsPrefix);
+                    if (isMultithreaded) {
+                        final SimulationConfig newConfig = new SimulationConfig(config);
+                        updateParameter(x, newConfig.getFirstParameterRange().getType(), newConfig);
+                        updateParameter(y, newConfig.getSecondParameterRange().getType(), newConfig);
+                        executor.execute(() -> run(fileMetricsPrefix, newConfig));
+                    } else {
+                        updateParameter(x, config.getFirstParameterRange().getType(), config);
+                        updateParameter(y, config.getSecondParameterRange().getType(), config);
+                        run(fileMetricsPrefix, config);
+                    }
                 }
             }
 
+            if (isMultithreaded) {
+                executor.shutdown();
+                try {
+                    while (!executor.awaitTermination(24L, TimeUnit.HOURS)) {
+                        System.out.println("Not yet. Still waiting for termination");
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
@@ -79,12 +101,14 @@ public class Simulation {
                 .setStyle(ProgressBarStyle.COLORFUL_UNICODE_BLOCK)
                 .setTaskName("Running experiment: " + config.getFirstParameterRange().getType());
         for (double val : ProgressBar.wrap(parametersRange, pbb)) {
-            updateParameter(val, type);
-            run(fileMetricsPrefix);
+            updateParameter(val, type, config);
+            run(fileMetricsPrefix, config);
         }
     }
 
-    public void run(String fileMetricsPrefix) {
+    public void run(String fileMetricsPrefix, SimulationConfig config) {
+        System.out.println("config = " + config);
+        List<AgentMetrics> metrics = new LinkedList<>();
         for (int i = 0; i < config.getnRuns(); i++) {
             int additionalVirtualLinks =
                     getnAdditionalLinks(config.getnAgents(), config.getAdditionalLinksFraction(), config.getNetworkM());
@@ -104,12 +128,14 @@ public class Simulation {
                 if (step % config.getnSaveSteps() == 0)
                     metrics.add(new AgentMetrics(step, agents));
             }
-            saveMetrics(fileMetricsPrefix, i);
+            System.out.println("Thread.currentThread().getName() = sdsds = " + Thread.currentThread().getName());
+            System.out.println("Saving");
+            saveMetrics(fileMetricsPrefix, i, config, metrics);
             metrics.clear();
         }
     }
 
-    private void updateParameter(double x, ParameterType type) {
+    private void updateParameter(double x, ParameterType type, SimulationConfig config) {
         switch (type) {
             case q -> config.getqVoterParameters().setQ((int) x);
             case p -> config.getqVoterParameters().setP(x);
@@ -124,17 +150,24 @@ public class Simulation {
         }
     }
 
-    private void saveMetrics(String prefix, int nRun) {
+    private void saveMetrics(String prefix, int nRun, SimulationConfig config, List<AgentMetrics> metrics) {
         try {
+            lock.lock();
+            System.out.println(config);
+            System.out.println("metrics.get(0) = " + metrics.get(0));
+            System.out.println("Thread.currentThread().getName() = " + Thread.currentThread().getName());
             var convertedMetrics = metrics.stream().map(AgentMetrics::toString).collect(Collectors.toList());
             convertedMetrics.add(0,
                     "step\tmeanOpinion\tsusceptibleRate\tinfectedRate\tquarantinedRate\trecoveredRate\tdeadRate");
             var path = Paths.get(config.getOutputFolder());
             Files.createDirectories(path);
             FileUtils.writeLines(new File(path.toString(), prepareFilename(prefix, nRun)), convertedMetrics);
+            System.out.println("After saving");
         } catch (IOException e) {
             e.printStackTrace();
             System.err.println("Unable to write out names");
+        } finally {
+            lock.unlock();
         }
     }
 
