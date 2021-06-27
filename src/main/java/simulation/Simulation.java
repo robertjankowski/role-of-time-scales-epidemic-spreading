@@ -71,6 +71,7 @@ public class Simulation {
             for (double x : ProgressBar.wrap(firstParameterRange, pbb)) {
                 for (double y : secondParameterRange) {
                     if (isMultithreaded) {
+                        // TODO: Not working, config is not correctly updated ?
                         final SimulationConfig newConfig = new SimulationConfig(config);
                         updateParameter(x, newConfig.getFirstParameterRange().getType(), newConfig);
                         updateParameter(y, newConfig.getSecondParameterRange().getType(), newConfig);
