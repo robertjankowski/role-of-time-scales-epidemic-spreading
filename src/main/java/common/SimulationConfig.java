@@ -54,8 +54,8 @@ public class SimulationConfig {
         this.isEpidemicLayer = other.isEpidemicLayer;
         this.isVirtualLayer = other.isVirtualLayer;
         this.isComorbidities = other.isComorbidities;
-        this.qVoterParameters = other.qVoterParameters;
-        this.epidemicLayerParameters = other.epidemicLayerParameters;
+        this.qVoterParameters = new QVoterParameters(other.qVoterParameters);
+        this.epidemicLayerParameters = new EpidemicLayerParameters(other.epidemicLayerParameters);
         this.positiveOpinionFraction = other.positiveOpinionFraction;
         this.infectedFraction = other.infectedFraction;
         this.fractionIllnessA = other.fractionIllnessA;

@@ -14,7 +14,6 @@ import me.tongfei.progressbar.ProgressBarStyle;
 import org.apache.commons.io.FileUtils;
 import org.jgrapht.Graphs;
 import org.jgrapht.alg.util.Pair;
-import org.jgrapht.graph.DefaultEdge;
 import utils.RandomCollectors;
 
 import java.io.File;
@@ -25,9 +24,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 
@@ -49,9 +46,9 @@ public class Simulation {
         }
     }
 
-    public void runAll(String fileMetricsPrefix, boolean isMultithreaded) {
+    public void runAll(String fileMetricsPrefix, boolean isMultithreaded) throws InterruptedException {
         if (config.getFirstParameterRange() == null && config.getSecondParameterRange() == null) {
-            run(fileMetricsPrefix, config);
+            runModel(fileMetricsPrefix, config);
         } else if (config.getFirstParameterRange() != null && config.getSecondParameterRange() == null) {
             var parametersRange = config.getFirstParameterRange().getParametersRange();
             var type = config.getFirstParameterRange().getType();
@@ -68,31 +65,28 @@ public class Simulation {
                     .setStyle(ProgressBarStyle.COLORFUL_UNICODE_BLOCK)
                     .setTaskName("Running experiment: " + config.getFirstParameterRange().getType() +
                             " and " + config.getSecondParameterRange().getType());
+            var vals = new ArrayList<Pair<Double, Double>>();
             for (double x : ProgressBar.wrap(firstParameterRange, pbb)) {
                 for (double y : secondParameterRange) {
                     if (isMultithreaded) {
-                        // TODO: Not working, config is not correctly updated ?
-                        final SimulationConfig newConfig = new SimulationConfig(config);
-                        updateParameter(x, newConfig.getFirstParameterRange().getType(), newConfig);
-                        updateParameter(y, newConfig.getSecondParameterRange().getType(), newConfig);
-                        executor.execute(() -> run(fileMetricsPrefix, newConfig));
+                        vals.add(Pair.of(x, y));
                     } else {
                         updateParameter(x, config.getFirstParameterRange().getType(), config);
                         updateParameter(y, config.getSecondParameterRange().getType(), config);
-                        run(fileMetricsPrefix, config);
+                        runModel(fileMetricsPrefix, config);
                     }
                 }
             }
 
             if (isMultithreaded) {
+                var tasks = vals.stream()
+                        .map(p -> new SetAndRun(p.getFirst(), p.getSecond(), fileMetricsPrefix, config))
+                        .collect(Collectors.toList());
+                CompletableFuture<?>[] futures = tasks.stream()
+                        .map(task -> CompletableFuture.runAsync(task, executor))
+                        .toArray(CompletableFuture[]::new);
+                CompletableFuture.allOf(futures).join();
                 executor.shutdown();
-                try {
-                    while (!executor.awaitTermination(24L, TimeUnit.HOURS)) {
-                        System.out.println("Not yet. Still waiting for termination");
-                    }
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
             }
         }
     }
@@ -103,12 +97,32 @@ public class Simulation {
                 .setTaskName("Running experiment: " + config.getFirstParameterRange().getType());
         for (double val : ProgressBar.wrap(parametersRange, pbb)) {
             updateParameter(val, type, config);
-            run(fileMetricsPrefix, config);
+            runModel(fileMetricsPrefix, config);
         }
     }
 
-    public void run(String fileMetricsPrefix, SimulationConfig config) {
-        System.out.println("config = " + config);
+    class SetAndRun implements Runnable {
+        private final SimulationConfig newConfig;
+        private final String fileMetricsPrefix;
+        private final double x;
+        private final double y;
+
+        public SetAndRun(double x, double y, String fileMetricsPrefix, SimulationConfig config) {
+            this.x = x;
+            this.y = y;
+            this.fileMetricsPrefix = fileMetricsPrefix;
+            this.newConfig = new SimulationConfig(config);
+            updateParameter(x, newConfig.getFirstParameterRange().getType(), newConfig);
+            updateParameter(y, newConfig.getSecondParameterRange().getType(), newConfig);
+        }
+
+        public void run() {
+
+            runModel(fileMetricsPrefix, newConfig);
+        }
+    }
+
+    public void runModel(String fileMetricsPrefix, SimulationConfig config) {
         List<AgentMetrics> metrics = new LinkedList<>();
         for (int i = 0; i < config.getnRuns(); i++) {
             int additionalVirtualLinks =
@@ -129,8 +143,6 @@ public class Simulation {
                 if (step % config.getnSaveSteps() == 0)
                     metrics.add(new AgentMetrics(step, agents));
             }
-            System.out.println("Thread.currentThread().getName() = sdsds = " + Thread.currentThread().getName());
-            System.out.println("Saving");
             saveMetrics(fileMetricsPrefix, i, config, metrics);
             metrics.clear();
         }
@@ -154,15 +166,12 @@ public class Simulation {
     private void saveMetrics(String prefix, int nRun, SimulationConfig config, List<AgentMetrics> metrics) {
         try {
             lock.lock();
-            System.out.println(config);
-            System.out.println("metrics.get(0) = " + metrics.get(0));
-            System.out.println("Thread.currentThread().getName() = " + Thread.currentThread().getName());
             var convertedMetrics = metrics.stream().map(AgentMetrics::toString).collect(Collectors.toList());
             convertedMetrics.add(0,
                     "step\tmeanOpinion\tsusceptibleRate\tinfectedRate\tquarantinedRate\trecoveredRate\tdeadRate");
             var path = Paths.get(config.getOutputFolder());
             Files.createDirectories(path);
-            FileUtils.writeLines(new File(path.toString(), prepareFilename(prefix, nRun)), convertedMetrics);
+            FileUtils.writeLines(new File(path.toString(), prepareFilename(prefix, nRun, config)), convertedMetrics);
             System.out.println("After saving");
         } catch (IOException e) {
             e.printStackTrace();
@@ -172,7 +181,7 @@ public class Simulation {
         }
     }
 
-    private String prepareFilename(String prefix, int nRun) {
+    private String prepareFilename(String prefix, int nRun, SimulationConfig config) {
         return prefix + "_NAGENTS=" + config.getnAgents() +
                 "_NSTEPS=" + config.getnSteps() +
                 "_NETWORKP=" + config.getNetworkP() +

@@ -40,6 +40,13 @@ public final class EpidemicLayerParameters {
         this.kappa = kappa;
     }
 
+    public EpidemicLayerParameters(EpidemicLayerParameters other) {
+        this.beta = other.beta;
+        this.gamma = other.gamma;
+        this.mu = other.mu;
+        this.kappa = other.kappa;
+    }
+
     public double getBeta() {
         return beta;
     }

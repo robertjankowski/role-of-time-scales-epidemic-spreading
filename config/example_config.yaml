@@ -27,7 +27,7 @@ firstParameterRange:
   start: 0.0
   end: 0.4
   count: 3
-  vals: null
+  vals: [ 0.1, 0.5, 0.9 ]
   type: p
 secondParameterRange:
   start: 0.0
