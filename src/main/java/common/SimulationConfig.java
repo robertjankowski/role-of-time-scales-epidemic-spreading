@@ -40,6 +40,35 @@ public class SimulationConfig {
         return objectMapper.readValue(new File(filePath), SimulationConfig.class);
     }
 
+    public SimulationConfig() {
+    }
+
+    public SimulationConfig(SimulationConfig other) {
+        this.nAgents = other.nAgents;
+        this.nSteps = other.nSteps;
+        this.nSaveSteps = other.nSaveSteps;
+        this.nRuns = other.nRuns;
+        this.networkP = other.networkP;
+        this.networkM = other.networkM;
+        this.additionalLinksFraction = other.additionalLinksFraction;
+        this.isEpidemicLayer = other.isEpidemicLayer;
+        this.isVirtualLayer = other.isVirtualLayer;
+        this.isComorbidities = other.isComorbidities;
+        this.qVoterParameters = new QVoterParameters(other.qVoterParameters);
+        this.epidemicLayerParameters = new EpidemicLayerParameters(other.epidemicLayerParameters);
+        this.positiveOpinionFraction = other.positiveOpinionFraction;
+        this.infectedFraction = other.infectedFraction;
+        this.fractionIllnessA = other.fractionIllnessA;
+        this.fractionIllnessB = other.fractionIllnessB;
+        this.maxInfectedTimeMean = other.maxInfectedTimeMean;
+        this.maxInfectedTimeStd = other.maxInfectedTimeStd;
+        this.outputFolder = other.outputFolder;
+        this.firstParameterRange = other.firstParameterRange;
+        this.secondParameterRange = other.secondParameterRange;
+        this.nQVoterPerStep = other.nQVoterPerStep;
+        this.isLinksRemoval = other.isLinksRemoval;
+    }
+
     public int getnAgents() {
         return nAgents;
     }
@@ -251,5 +280,10 @@ public class SimulationConfig {
                 ", nQVoterPerStep=" + nQVoterPerStep +
                 ", isLinksRemoval=" + isLinksRemoval +
                 '}';
+    }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return (SimulationConfig) super.clone();
     }
 }

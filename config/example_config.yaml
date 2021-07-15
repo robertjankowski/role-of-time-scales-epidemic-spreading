@@ -1,5 +1,5 @@
-nAgents: 100000
-nSteps: 10000000
+nAgents: 10000
+nSteps: 1000000
 nSaveSteps: 10000
 nRuns: 1
 networkP: 0.8
@@ -26,14 +26,14 @@ outputFolder: simulations/example
 firstParameterRange:
   start: 0.0
   end: 0.4
-  count: 11
-  vals: null
+  count: 3
+  vals: [ 0.1, 0.5, 0.9 ]
   type: p
 secondParameterRange:
   start: 0.0
   end: 1.0
   count: 3
-  vals: [ 0.1, 0.5, 0.9 ]
+  vals: [ 0.1, 0.9 ]
   type: positiveOpinionFraction
 linksRemoval: false
 nQVoterPerStep: 1

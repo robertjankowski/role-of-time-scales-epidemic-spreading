@@ -1,17 +1,12 @@
 package common.network;
 
-import org.jgrapht.alg.scoring.ClusteringCoefficient;
 import org.jgrapht.alg.util.Pair;
 import org.jgrapht.generate.BarabasiAlbertGraphGenerator;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.util.SupplierUtil;
 import utils.Utils;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 

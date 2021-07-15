@@ -25,6 +25,11 @@ public final class QVoterParameters {
         this.q = q;
     }
 
+    public QVoterParameters(QVoterParameters other) {
+        this.p = other.p;
+        this.q = other.q;
+    }
+
     public double getP() {
         return p;
     }
