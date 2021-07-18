@@ -15,15 +15,13 @@ import org.apache.commons.io.FileUtils;
 import org.jgrapht.Graphs;
 import org.jgrapht.alg.util.Pair;
 import utils.RandomCollectors;
+import utils.Utils;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
@@ -138,7 +136,7 @@ public class Simulation {
                     config.getMaxInfectedTimeStd());
             for (int step = 0; step < config.getnSteps(); step++) {
                 var node = random.nextInt(config.getnAgents());
-                singleStep(node, layers, agents);
+                singleStep(node, layers, agents, config);
                 if (step % config.getnSaveSteps() == 0)
                     metrics.add(new AgentMetrics(step, agents));
             }
@@ -196,27 +194,27 @@ public class Simulation {
                 "_NRUN=" + nRun + ".tsv";
     }
 
-    private void singleStep(int node, Pair<Layer, Layer> layers, List<Agent> agents) {
+    private void singleStep(int node, Pair<Layer, Layer> layers, List<Agent> agents, SimulationConfig config) {
         if (config.isVirtualLayer()) {
             // Assumption: an agent could send more messages than meet people in one timestamp.
             for (int i = 0; i < config.getnQVoterPerStep(); i++) {
-                virtualLayerStep(node, layers, agents);
+                virtualLayerStep(node, layers, agents, config);
             }
         }
         if (config.isEpidemicLayer()) {
-            epidemicLayerStep(node, layers, agents);
+            epidemicLayerStep(node, layers, agents, config);
         }
     }
 
-    private void virtualLayerStep(int node, Pair<Layer, Layer> layers, List<Agent> agents) {
+    private void virtualLayerStep(int node, Pair<Layer, Layer> layers, List<Agent> agents, SimulationConfig config) {
         if (random.nextDouble() < config.getqVoterParameters().getP()) {
             voterActNonConformity(node, agents);
         } else {
-            voterActConformity(node, layers.getSecond(), agents);
+            voterActConformity(node, layers.getSecond(), agents, config);
         }
     }
 
-    private void voterActConformity(int node, Layer virtualLayer, List<Agent> agents) {
+    private void voterActConformity(int node, Layer virtualLayer, List<Agent> agents, SimulationConfig config) {
         int q = config.getqVoterParameters().getQ();
         var neighbours = Graphs.neighborListOf(virtualLayer, node).stream()
                 .collect(RandomCollectors.toImprovedLazyShuffledStream())
@@ -246,12 +244,20 @@ public class Simulation {
         }
     }
 
-    private void epidemicLayerStep(int node, Pair<Layer, Layer> layers, List<Agent> agents) {
+    private void epidemicLayerStep(int node, Pair<Layer, Layer> layers, List<Agent> agents, SimulationConfig config) {
         var agent = agents.get(node);
         var epidemicLayer = layers.getFirst();
         switch (agent.getState()) {
             case SUSCEPTIBLE -> {
-                for (int neighbor : Graphs.neighborListOf(epidemicLayer, node)) {
+                var neighbours = Graphs.neighborListOf(epidemicLayer, node);
+                Collections.shuffle(neighbours);
+                if (config.isLinksRemoval()) {
+                    if (agent.getOpinion() == 1 && neighbours.size() > 0) {
+                        var toRemove = random.nextInt(neighbours.size());
+                        neighbours = neighbours.stream().skip(toRemove).collect(Collectors.toList());
+                    }
+                }
+                for (int neighbor : neighbours) {
                     if (agents.get(neighbor).getState() == AgentState.INFECTED) {
                         if (random.nextDouble() < getCombinedBetaProbability(agent)) {     // S --> I
                             agent.setState(AgentState.INFECTED);
