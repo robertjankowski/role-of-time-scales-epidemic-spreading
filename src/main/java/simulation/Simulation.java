@@ -15,14 +15,15 @@ import org.apache.commons.io.FileUtils;
 import org.jgrapht.Graphs;
 import org.jgrapht.alg.util.Pair;
 import utils.RandomCollectors;
-import utils.Utils;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.concurrent.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 
@@ -169,7 +170,7 @@ public class Simulation {
             var path = Paths.get(config.getOutputFolder());
             Files.createDirectories(path);
             FileUtils.writeLines(new File(path.toString(), prepareFilename(prefix, nRun, config)), convertedMetrics);
-            System.out.println("After saving");
+            // System.out.println("After saving");
         } catch (IOException e) {
             e.printStackTrace();
             System.err.println("Unable to write out names");
@@ -271,9 +272,9 @@ public class Simulation {
                 if (agent.getInfectedTime() >= agent.getMaxInfectedTime()) {
                     if (random.nextDouble() < getCombinedGammaProbability(agent)) {        // I --> Q
                         agent.setState(AgentState.QUARANTINED);
-                        if (config.isLinksRemoval()) {
-                            removeLinksBothLayers(node, layers);
-                        }
+                        //if (config.isLinksRemoval()) {
+                        //    removeLinksBothLayers(node, layers);
+                        //}
                     } else if (random.nextDouble() < getCombinedMuProbability(agent)) {    // I --> R
                         agent.setState(AgentState.RECOVERED);
                     } else if (random.nextDouble() < getCombinedKappaProbability(agent)) { // I --> D

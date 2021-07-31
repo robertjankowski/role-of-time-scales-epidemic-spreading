@@ -1,7 +1,7 @@
 nAgents: 10000
 nSteps: 1000000
 nSaveSteps: 10000
-nRuns: 5
+nRuns: 10
 networkP: 0.8
 networkM: 10
 additionalLinksFraction: 0.01
@@ -9,25 +9,25 @@ virtualLayer: true
 epidemicLayer: true
 comorbidities: false
 qVoterParameters:
-  p: 1.0
+  p: 0.3
   q: 6
 epidemicLayerParameters:
-  beta: 0.9
+  beta: 0.1
   gamma: 0.5
-  mu: 0.8
-  kappa: 0.2
+  mu: 0.9
+  kappa: 0.1
 maxInfectedTimeMean: 10
 maxInfectedTimeStd: 5
 positiveOpinionFraction: 1.0
 infectedFraction: 0.1
 fractionIllnessA: 0.0
 fractionIllnessB: 0.0
-outputFolder: simulations/test_removal_links_on
+outputFolder: simulations/results_change_p
 firstParameterRange:
   start: 0.0
-  end: 0.3
-  count: 50
-  vals: [ 0.1, 0.5, 0.9 ]
+  end: 1.0
+  count: 11
+  vals: null
   type: p
 secondParameterRange:
   start: 0.0
@@ -35,5 +35,5 @@ secondParameterRange:
   count: 0
   vals: [ 0.0, 1.0 ]
   type: positiveOpinionFraction
-linksRemoval: true
+linksRemoval: false
 nQVoterPerStep: 1
