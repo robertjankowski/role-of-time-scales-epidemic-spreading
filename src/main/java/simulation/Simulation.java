@@ -103,12 +103,8 @@ public class Simulation {
     class SetAndRun implements Runnable {
         private final SimulationConfig newConfig;
         private final String fileMetricsPrefix;
-        private final double x;
-        private final double y;
 
         public SetAndRun(double x, double y, String fileMetricsPrefix, SimulationConfig config) {
-            this.x = x;
-            this.y = y;
             this.fileMetricsPrefix = fileMetricsPrefix;
             this.newConfig = new SimulationConfig(config);
             updateParameter(x, newConfig.getFirstParameterRange().getType(), newConfig);
