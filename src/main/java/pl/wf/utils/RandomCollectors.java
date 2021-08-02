@@ -1,4 +1,4 @@
-package utils;
+package pl.wf.utils;
 
 import java.util.ArrayList;
 import java.util.Random;

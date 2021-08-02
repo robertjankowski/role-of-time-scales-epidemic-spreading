@@ -1,9 +1,9 @@
-package common.parameters;
+package pl.wf.common.parameters;
 
 import java.text.DecimalFormat;
 
 /**
- * Parameters of simulation for $$l_1$$ (epidemic) layer
+ * Parameters of pl.wf.simulation for $$l_1$$ (epidemic) layer
  * <p>
  * p_beta: probability that agent becomes infected (S -> I)
  * <p>

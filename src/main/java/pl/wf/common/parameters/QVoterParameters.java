@@ -1,4 +1,4 @@
-package common.parameters;
+package pl.wf.common.parameters;
 
 import java.text.DecimalFormat;
 

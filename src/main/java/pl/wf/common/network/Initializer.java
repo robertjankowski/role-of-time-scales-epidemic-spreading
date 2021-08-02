@@ -1,9 +1,9 @@
-package common.network;
+package pl.wf.common.network;
 
-import common.AgeStatistics;
-import common.agent.Agent;
-import common.agent.AgentState;
-import utils.Utils;
+import pl.wf.common.AgeStatistics;
+import pl.wf.common.agent.Agent;
+import pl.wf.common.agent.AgentState;
+import pl.wf.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;

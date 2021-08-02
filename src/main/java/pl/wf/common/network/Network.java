@@ -1,10 +1,10 @@
-package common.network;
+package pl.wf.common.network;
 
 import org.jgrapht.alg.util.Pair;
 import org.jgrapht.generate.BarabasiAlbertGraphGenerator;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.util.SupplierUtil;
-import utils.Utils;
+import pl.wf.utils.Utils;
 
 import java.util.List;
 import java.util.function.Supplier;

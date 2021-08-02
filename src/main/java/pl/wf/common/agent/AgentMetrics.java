@@ -1,4 +1,4 @@
-package common.agent;
+package pl.wf.common.agent;
 
 import java.util.List;
 

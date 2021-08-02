@@ -1,20 +1,20 @@
-package simulation;
+package pl.wf.simulation;
 
-import common.SimulationConfig;
-import common.agent.Agent;
-import common.agent.AgentMetrics;
-import common.agent.AgentState;
-import common.network.Initializer;
-import common.network.Layer;
-import common.network.Network;
-import common.parameters.ParameterType;
+import pl.wf.common.SimulationConfig;
+import pl.wf.common.agent.Agent;
+import pl.wf.common.agent.AgentMetrics;
+import pl.wf.common.agent.AgentState;
+import pl.wf.common.network.Initializer;
+import pl.wf.common.network.Layer;
+import pl.wf.common.network.Network;
+import pl.wf.common.parameters.ParameterType;
 import me.tongfei.progressbar.ProgressBar;
 import me.tongfei.progressbar.ProgressBarBuilder;
 import me.tongfei.progressbar.ProgressBarStyle;
 import org.apache.commons.io.FileUtils;
 import org.jgrapht.Graphs;
 import org.jgrapht.alg.util.Pair;
-import utils.RandomCollectors;
+import pl.wf.utils.RandomCollectors;
 
 import java.io.File;
 import java.io.IOException;
@@ -39,7 +39,7 @@ public class Simulation {
             config = SimulationConfig.loadConfig(configPath);
             random = new Random();
         } catch (IOException e) {
-            System.err.println("Could not load simulation config. Exiting");
+            System.err.println("Could not load pl.wf.simulation config. Exiting");
             e.printStackTrace();
             System.exit(0);
         }

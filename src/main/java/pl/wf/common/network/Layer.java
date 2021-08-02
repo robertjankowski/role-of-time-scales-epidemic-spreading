@@ -1,4 +1,4 @@
-package common.network;
+package pl.wf.common.network;
 
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.SimpleGraph;

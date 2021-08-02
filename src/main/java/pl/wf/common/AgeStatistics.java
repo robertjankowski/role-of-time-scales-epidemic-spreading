@@ -1,4 +1,4 @@
-package common;
+package pl.wf.common;
 
 import org.apache.commons.math3.distribution.EnumeratedIntegerDistribution;
 

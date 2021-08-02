@@ -1,6 +1,6 @@
-package common.agent;
+package pl.wf.common.agent;
 
-import common.SimulationConfig;
+import pl.wf.common.SimulationConfig;
 
 public class Agent {
     private static int ID = 0;

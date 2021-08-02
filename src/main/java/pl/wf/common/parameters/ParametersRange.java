@@ -1,4 +1,4 @@
-package common.parameters;
+package pl.wf.common.parameters;
 
 import java.util.List;
 import java.util.stream.Collectors;

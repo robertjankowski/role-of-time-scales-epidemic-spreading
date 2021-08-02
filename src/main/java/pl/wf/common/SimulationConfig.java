@@ -1,11 +1,10 @@
-package common;
+package pl.wf.common;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.util.PrimitiveArrayBuilder;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import common.parameters.EpidemicLayerParameters;
-import common.parameters.ParametersRange;
-import common.parameters.QVoterParameters;
+import pl.wf.common.parameters.EpidemicLayerParameters;
+import pl.wf.common.parameters.ParametersRange;
+import pl.wf.common.parameters.QVoterParameters;
 
 import java.io.File;
 import java.io.IOException;

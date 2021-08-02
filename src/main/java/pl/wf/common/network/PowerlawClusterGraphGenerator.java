@@ -1,10 +1,10 @@
-package common.network;
+package pl.wf.common.network;
 
 import org.jgrapht.Graph;
 import org.jgrapht.Graphs;
 import org.jgrapht.generate.CompleteGraphGenerator;
 import org.jgrapht.generate.GraphGenerator;
-import utils.Utils;
+import pl.wf.utils.Utils;
 
 import java.util.*;
 import java.util.stream.Collectors;
