@@ -1,7 +1,7 @@
 nAgents: 10000
 nSteps: 1000000
 nSaveSteps: 1000
-nRuns: 10
+nRuns: 1000
 networkP: 0.8
 networkM: 10
 additionalLinksFraction: 0.01
@@ -12,7 +12,7 @@ qVoterParameters:
   p: 0.01
   q: 6
 epidemicLayerParameters:
-  beta: 0.9
+  beta: 0.1
   gamma: 0.5
   mu: 0.9
   kappa: 0.1
@@ -22,18 +22,13 @@ positiveOpinionFraction: 1.0
 infectedFraction: 0.1
 fractionIllnessA: 0.0
 fractionIllnessB: 0.0
-outputFolder: simulations/results_remove_links_parameters_beta_range_small_p
+outputFolder: simulations/results_qvoter_and_epidemic
 firstParameterRange:
   start: 0.0
   end: 1.0
   count: 51
-  vals: null
+  vals: [ 0.0, 0.25, 0.5, 0.75, 1.0 ]
   type: positiveOpinionFraction
-secondParameterRange:
-  start: 0.0
-  end: 1.0
-  count: 21
-  vals: null
-  type: beta
+secondParameterRange: null
 linksRemoval: false
 nQVoterPerStep: 1
