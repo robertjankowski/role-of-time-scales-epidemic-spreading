@@ -6,6 +6,7 @@ public class AgentMetrics {
     private final int simulationStep;
     private double meanOpinion = 0;
     private double susceptibleRate = 0;
+    private double vaccinationRate = 0;
     private double infectedRate = 0;
     private double quarantinedRate = 0;
     private double recoveredRate = 0;
@@ -16,6 +17,7 @@ public class AgentMetrics {
         for (var agent : agents) {
             switch (agent.getState()) {
                 case SUSCEPTIBLE -> susceptibleRate += 1;
+                case VACCINATED -> vaccinationRate += 1;
                 case INFECTED -> infectedRate += 1;
                 case QUARANTINED -> quarantinedRate += 1;
                 case DEAD -> deadRate += 1;
@@ -26,6 +28,7 @@ public class AgentMetrics {
         int size = agents.size();
         meanOpinion /= size;
         susceptibleRate /= size;
+        vaccinationRate /= size;
         infectedRate /= size;
         quarantinedRate /= size;
         deadRate /= size;
@@ -37,6 +40,7 @@ public class AgentMetrics {
         return simulationStep + "\t" +
                 meanOpinion + "\t" +
                 susceptibleRate + "\t" +
+                vaccinationRate + "\t" +
                 infectedRate + "\t" +
                 quarantinedRate + "\t" +
                 recoveredRate + "\t" +

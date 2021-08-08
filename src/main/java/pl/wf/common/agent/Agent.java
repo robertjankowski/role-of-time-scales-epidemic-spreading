@@ -6,6 +6,7 @@ public class Agent {
     private static int ID = 0;
     private final int id;
     private int opinion;
+    private int politicalSupport;
     private double infectedTime;
     private double maxInfectedTime;
     private AgentState state;
@@ -13,9 +14,10 @@ public class Agent {
     private boolean hasIllnessB;
     private int age;
 
-    public Agent(int opinion, double maxInfectedTime) {
+    public Agent(int opinion, int politicalSupport, double maxInfectedTime) {
         this.id = ID++;
         this.opinion = opinion;
+        this.politicalSupport = politicalSupport;
         this.infectedTime = 0;
         this.maxInfectedTime = maxInfectedTime;
         this.state = AgentState.SUSCEPTIBLE;
@@ -97,24 +99,34 @@ public class Agent {
         this.age = age;
     }
 
-    @Override
-    public String toString() {
-        return "Agent{" +
-                "id=" + id +
-                ", opinion=" + opinion +
-                ", infectedTime=" + infectedTime +
-                ", state=" + state +
-                ", hasIllnessA=" + hasIllnessA +
-                ", hasIllnessB=" + hasIllnessB +
-                ", age=" + age +
-                '}';
-    }
-
     public double getMaxInfectedTime() {
         return maxInfectedTime;
     }
 
     public void setMaxInfectedTime(double maxInfectedTime) {
         this.maxInfectedTime = maxInfectedTime;
+    }
+
+    public int getPoliticalSupport() {
+        return politicalSupport;
+    }
+
+    public void setPoliticalSupport(int politicalSupport) {
+        this.politicalSupport = politicalSupport;
+    }
+
+    @Override
+    public String toString() {
+        return "Agent{" +
+                "id=" + id +
+                ", opinion=" + opinion +
+                ", politicalSupport=" + politicalSupport +
+                ", infectedTime=" + infectedTime +
+                ", maxInfectedTime=" + maxInfectedTime +
+                ", state=" + state +
+                ", hasIllnessA=" + hasIllnessA +
+                ", hasIllnessB=" + hasIllnessB +
+                ", age=" + age +
+                '}';
     }
 }

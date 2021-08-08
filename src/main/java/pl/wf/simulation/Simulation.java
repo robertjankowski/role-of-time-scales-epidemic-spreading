@@ -126,6 +126,7 @@ public class Simulation {
             var agents = Initializer.initializeAgents(
                     config.getnAgents(),
                     config.getPositiveOpinionFraction(),
+                    config.getProPisFraction(),
                     config.getInfectedFraction(),
                     config.getFractionIllnessA(),
                     config.getFractionIllnessB(),
@@ -154,6 +155,7 @@ public class Simulation {
             case maxInfectedTimeStd -> config.setMaxInfectedTimeStd(x);
             case positiveOpinionFraction -> config.setPositiveOpinionFraction(x);
             case networkP -> config.setNetworkP(x);
+            case pisProFraction -> config.setProPisFraction(x);
         }
     }
 
@@ -181,10 +183,9 @@ public class Simulation {
                 "_NETWORKP=" + config.getNetworkP() +
                 "_FRAC_LINKS=" + config.getAdditionalLinksFraction() +
                 "_FRAC_POS_OPINION=" + config.getPositiveOpinionFraction() +
-                "_FRAC_A=" + config.getFractionIllnessA() +
-                "_FRAC_B=" + config.getFractionIllnessB() +
                 "_FRAC_INFECTED=" + config.getInfectedFraction() +
                 "_QVOTER=" + config.getqVoterParameters() +
+                "_PIS=" + config.getProPisFraction() +
                 "_EPIDEMIC=" + config.getEpidemicLayerParameters() +
                 "_I_TIME_MEAN=" + config.getMaxInfectedTimeMean() +
                 "_I_TIME_STD=" + config.getMaxInfectedTimeStd() +
@@ -205,7 +206,7 @@ public class Simulation {
 
     private void virtualLayerStep(int node, Pair<Layer, Layer> layers, List<Agent> agents, SimulationConfig config) {
         if (random.nextDouble() < config.getqVoterParameters().getP()) {
-            voterActNonConformity(node, agents);
+            voterActNonConformity(node, agents, config);
         } else {
             voterActConformity(node, layers.getSecond(), agents, config);
         }
@@ -233,12 +234,21 @@ public class Simulation {
         }
     }
 
-    private void voterActNonConformity(int node, List<Agent> agents) {
-        if (random.nextDouble() < 0.5) {
-            var agent = agents.get(node);
-            agent.flipOpinion();
-            agents.set(node, agent);
+    private void voterActNonConformity(int node, List<Agent> agents, SimulationConfig config) {
+        var agent = agents.get(node);
+        var x = random.nextDouble();
+        if (agent.getPoliticalSupport() == 1) { // pro PiS (political party)
+            if (x > config.getPisVaccinationCorrelation()) { // TODO: check it during simulations !
+                agent.setOpinion(1);
+            } else {
+                agent.setOpinion(-1);
+            }
+        } else { // against PiS (political party) -> normal q-voter
+            if (x < 0.5) {
+                agent.flipOpinion();
+            }
         }
+        agents.set(node, agent);
     }
 
     private void epidemicLayerStep(int node, Pair<Layer, Layer> layers, List<Agent> agents, SimulationConfig config) {
@@ -262,15 +272,16 @@ public class Simulation {
                         }
                     }
                 }
+                // TODO: S -> V
+            }
+            case VACCINATED ->  {
+                // TODO: V -> I
             }
             case INFECTED -> {
                 agent.incrementInfectedTime(config);
                 if (agent.getInfectedTime() >= agent.getMaxInfectedTime()) {
                     if (random.nextDouble() < getCombinedGammaProbability(agent)) {        // I --> Q
                         agent.setState(AgentState.QUARANTINED);
-                        //if (config.isLinksRemoval()) {
-                        //    removeLinksBothLayers(node, layers);
-                        //}
                     } else if (random.nextDouble() < getCombinedMuProbability(agent)) {    // I --> R
                         agent.setState(AgentState.RECOVERED);
                     } else if (random.nextDouble() < getCombinedKappaProbability(agent)) { // I --> D

@@ -23,6 +23,9 @@ public class SimulationConfig {
     private QVoterParameters qVoterParameters;
     private EpidemicLayerParameters epidemicLayerParameters;
     private double positiveOpinionFraction;
+    private double proPisFraction;
+    // Correlation between people who vote for PiS and the number of vaccinated at the Powiat level
+    private double pisVaccinationCorrelation;
     private double infectedFraction;
     private double fractionIllnessA;
     private double fractionIllnessB;
@@ -56,6 +59,8 @@ public class SimulationConfig {
         this.qVoterParameters = new QVoterParameters(other.qVoterParameters);
         this.epidemicLayerParameters = new EpidemicLayerParameters(other.epidemicLayerParameters);
         this.positiveOpinionFraction = other.positiveOpinionFraction;
+        this.proPisFraction = other.proPisFraction;
+        this.pisVaccinationCorrelation = other.pisVaccinationCorrelation;
         this.infectedFraction = other.infectedFraction;
         this.fractionIllnessA = other.fractionIllnessA;
         this.fractionIllnessB = other.fractionIllnessB;
@@ -252,6 +257,22 @@ public class SimulationConfig {
         isLinksRemoval = linksRemoval;
     }
 
+    public double getProPisFraction() {
+        return proPisFraction;
+    }
+
+    public void setProPisFraction(double proPisFraction) {
+        this.proPisFraction = proPisFraction;
+    }
+
+    public double getPisVaccinationCorrelation() {
+        return pisVaccinationCorrelation;
+    }
+
+    public void setPisVaccinationCorrelation(double pisVaccinationCorrelation) {
+        this.pisVaccinationCorrelation = pisVaccinationCorrelation;
+    }
+
     @Override
     public String toString() {
         return "SimulationConfig{" +
@@ -268,6 +289,8 @@ public class SimulationConfig {
                 ", qVoterParameters=" + qVoterParameters +
                 ", epidemicLayerParameters=" + epidemicLayerParameters +
                 ", positiveOpinionFraction=" + positiveOpinionFraction +
+                ", proPisFraction=" + proPisFraction +
+                ", pisVaccinationCorrelation=" + pisVaccinationCorrelation +
                 ", infectedFraction=" + infectedFraction +
                 ", fractionIllnessA=" + fractionIllnessA +
                 ", fractionIllnessB=" + fractionIllnessB +

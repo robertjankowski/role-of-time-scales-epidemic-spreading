@@ -21,6 +21,7 @@ public class Initializer {
      */
     public static List<Agent> initializeAgents(int size,
                                                double positiveOpinionFraction,
+                                               double proPiSFraction,
                                                double infectedFraction,
                                                double fractionIllnessA,
                                                double fractionIllnessB,
@@ -35,7 +36,11 @@ public class Initializer {
             if (r.nextDouble() > positiveOpinionFraction)
                 opinion = -1;
 
-            var agent = new Agent(opinion, Utils.nextGaussian(maxInfectedTimeMean, maxInfectedTimeStd));
+            int politicalSupport = 1;
+            if (r.nextDouble() > proPiSFraction)
+                politicalSupport = -1;
+
+            var agent = new Agent(opinion, politicalSupport, Utils.nextGaussian(maxInfectedTimeMean, maxInfectedTimeStd));
 
             // Age based on gender (50/50)
             if (r.nextBoolean()) {
