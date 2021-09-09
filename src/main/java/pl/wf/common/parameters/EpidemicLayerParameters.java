@@ -7,6 +7,10 @@ import java.text.DecimalFormat;
  * <p>
  * p_beta: probability that agent becomes infected (S -> I)
  * <p>
+ * p_zeta: probability that agent gets a vaccine (S -> V)
+ * <p>
+ * p_alpha: probability that the vaccine would not work (V -> I)
+ * <p>
  * p_gamma: probability that agent goes in a quarantine (I -> Q)
  * <p>
  * p_mu: probability that agent recovers from an illness (I -> R, Q -> R)
@@ -19,12 +23,16 @@ public final class EpidemicLayerParameters {
     private final static DecimalFormat df = new DecimalFormat("0.00");
 
     private double beta;
+    private double zeta;
+    private double alpha;
     private double gamma;
     private double mu;
     private double kappa;
 
     public EpidemicLayerParameters() {
         this.beta = 0.5;
+        this.zeta = 0.5;
+        this.alpha = 0.2;
         this.gamma = 0.5;
         this.mu = 0.9;
         this.kappa = 0.1;
@@ -79,9 +87,27 @@ public final class EpidemicLayerParameters {
         this.kappa = kappa;
     }
 
+    public double getZeta() {
+        return zeta;
+    }
+
+    public void setZeta(double zeta) {
+        this.zeta = zeta;
+    }
+
+    public double getAlpha() {
+        return alpha;
+    }
+
+    public void setAlpha(double alpha) {
+        this.alpha = alpha;
+    }
+
     @Override
     public String toString() {
         return "beta=" + df.format(beta) +
+                "_zeta=" + df.format(zeta) +
+                "_alpha=" + df.format(alpha) +
                 "_gamma=" + df.format(gamma) +
                 "_mu=" + df.format(mu) +
                 "_kappa=" + df.format(kappa);

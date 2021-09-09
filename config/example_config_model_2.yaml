@@ -9,16 +9,18 @@ virtualLayer: true
 epidemicLayer: true
 comorbidities: false
 qVoterParameters:
-  p: 0.01
+  p: 0.2
   q: 6
 epidemicLayerParameters:
-  beta: 0.9
+  beta: 0.1
+  zeta: 0.5 # attitude to get a vaccine
+  alpha: 0.9 # effectiveness of the vaccination
   gamma: 0.5
   mu: 0.9
   kappa: 0.1
 maxInfectedTimeMean: 10
 maxInfectedTimeStd: 5
-positiveOpinionFraction: 1.0
+positiveOpinionFraction: 0.1
 proPisFraction: 0.45
 pisVaccinationCorrelation: 0.3 # assumption: negative
 infectedFraction: 0.1
@@ -30,12 +32,7 @@ firstParameterRange:
   end: 1.0
   count: 11
   vals: null
-  type: positiveOpinionFraction
-secondParameterRange:
-  start: 0.0
-  end: 1.0
-  count: 11
-  vals: null
-  type: beta
+  type: pisProFraction
+secondParameterRange: null
 linksRemoval: false
 nQVoterPerStep: 1

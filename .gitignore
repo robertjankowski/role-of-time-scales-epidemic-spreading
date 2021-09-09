@@ -3,3 +3,4 @@ target
 notebooks/.ipynb_checkpoints
 simulations/
 nohup.out
+venv/

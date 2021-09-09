@@ -14,10 +14,11 @@ public class Initializer {
     /**
      * @param size                    Number of agents
      * @param positiveOpinionFraction Fraction of agents with positive opinions
+     * @param proPiSFraction          Fraction of agents voting for PiS
      * @param infectedFraction        Fraction of infected agents
      * @param fractionIllnessA        Fraction of agents with illness A
      * @param fractionIllnessB        Fraction of agents with illness B
-     * @return Initialize agents
+     * @return List with the initialized agents
      */
     public static List<Agent> initializeAgents(int size,
                                                double positiveOpinionFraction,

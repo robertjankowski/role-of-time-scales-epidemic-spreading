@@ -148,6 +148,8 @@ public class Simulation {
             case q -> config.getqVoterParameters().setQ((int) x);
             case p -> config.getqVoterParameters().setP(x);
             case beta -> config.getEpidemicLayerParameters().setBeta(x);
+            case zeta -> config.getEpidemicLayerParameters().setZeta(x);
+            case alpha -> config.getEpidemicLayerParameters().setAlpha(x);
             case gamma -> config.getEpidemicLayerParameters().setGamma(x);
             case mu -> config.getEpidemicLayerParameters().setMu(x);
             case kappa -> config.getEpidemicLayerParameters().setKappa(x);
@@ -164,11 +166,10 @@ public class Simulation {
             lock.lock();
             var convertedMetrics = metrics.stream().map(AgentMetrics::toString).collect(Collectors.toList());
             convertedMetrics.add(0,
-                    "step\tmeanOpinion\tsusceptibleRate\tinfectedRate\tquarantinedRate\trecoveredRate\tdeadRate");
+                    "step\tmeanOpinion\tsusceptibleRate\tvaccinationRate\tinfectedRate\tquarantinedRate\trecoveredRate\tdeadRate");
             var path = Paths.get(config.getOutputFolder());
             Files.createDirectories(path);
             FileUtils.writeLines(new File(path.toString(), prepareFilename(prefix, nRun, config)), convertedMetrics);
-            // System.out.println("After saving");
         } catch (IOException e) {
             e.printStackTrace();
             System.err.println("Unable to write out names");
@@ -256,6 +257,12 @@ public class Simulation {
         var epidemicLayer = layers.getFirst();
         switch (agent.getState()) {
             case SUSCEPTIBLE -> {
+                // S -> V
+                if (random.nextDouble() < getCombinedZetaProbability(agent)) {
+                    agent.setState(AgentState.VACCINATED);
+                    break;
+                }
+                // S -> I
                 var neighbours = Graphs.neighborListOf(epidemicLayer, node);
                 Collections.shuffle(neighbours);
                 if (config.isLinksRemoval()) {
@@ -272,10 +279,12 @@ public class Simulation {
                         }
                     }
                 }
-                // TODO: S -> V
             }
-            case VACCINATED ->  {
-                // TODO: V -> I
+            case VACCINATED -> {
+                if (random.nextDouble() < getCombinedAlphaProbability(agent)) { // V -> I
+                    agent.setState(AgentState.INFECTED);
+                    break;
+                }
             }
             case INFECTED -> {
                 agent.incrementInfectedTime(config);
@@ -301,20 +310,6 @@ public class Simulation {
         agents.set(node, agent);
     }
 
-    private void removeLinksBothLayers(int node, Pair<Layer, Layer> layers) {
-        var epidemicLayer = layers.getFirst();
-        var virtualLayer = layers.getSecond();
-        removeEdges(node, epidemicLayer);
-        removeEdges(node, virtualLayer);
-    }
-
-    private void removeEdges(int node, Layer layer) {
-        var edgesToRemove = new ArrayList<>(layer.edgesOf(node));
-        for (var edge : edgesToRemove) {
-            layer.removeEdge(edge);
-        }
-    }
-
     private double getCombinedBetaProbability(Agent agent) {
         // S --> I
         double beta = config.getEpidemicLayerParameters().getBeta();
@@ -327,6 +322,18 @@ public class Simulation {
         } else {
             return beta;
         }
+    }
+
+    private double getCombinedZetaProbability(Agent agent) {
+        // S -> V
+        double zeta = config.getEpidemicLayerParameters().getZeta();
+        return zeta;
+    }
+
+    private double getCombinedAlphaProbability(Agent agent) {
+        // V -> I
+        double alpha = config.getEpidemicLayerParameters().getAlpha();
+        return alpha;
     }
 
     private double getCombinedGammaProbability(Agent agent) {
