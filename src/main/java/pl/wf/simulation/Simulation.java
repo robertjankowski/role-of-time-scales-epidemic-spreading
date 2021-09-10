@@ -116,7 +116,7 @@ public class Simulation {
         }
     }
 
-    public void runModel(String fileMetricsPrefix, SimulationConfig config) {
+    public void     runModel(String fileMetricsPrefix, SimulationConfig config) {
         List<AgentMetrics> metrics = new LinkedList<>();
         for (int i = 0; i < config.getnRuns(); i++) {
             int additionalVirtualLinks =
@@ -132,11 +132,25 @@ public class Simulation {
                     config.getFractionIllnessB(),
                     config.getMaxInfectedTimeMean(),
                     config.getMaxInfectedTimeStd());
-            for (int step = 0; step < config.getnSteps(); step++) {
-                var node = random.nextInt(config.getnAgents());
-                singleStep(node, layers, agents, config);
-                if (step % config.getnSaveSteps() == 0)
-                    metrics.add(new AgentMetrics(step, agents));
+            int stepsByAgents = config.getnSteps() / config.getnAgents();
+            for (int j = 0; j < stepsByAgents; j++) {
+                // Update all nodes on the epidemic layer
+                for (int a = 0; a < config.getnAgents(); a++) {
+                    var node = random.nextInt(config.getnAgents());
+                    if (config.isEpidemicLayer()) {
+                        epidemicLayerStep(node, layers, agents, config);
+                    }
+                }
+                // Update all nodes on the opinion layer
+                for (int a = 0; a < config.getnAgents(); a++) {
+                    var node = random.nextInt(config.getnAgents());
+                    if (config.isVirtualLayer()) {
+                        virtualLayerStep(node, layers, agents, config);
+                    }
+
+                }
+                if (j % config.getnSaveSteps() == 0)
+                    metrics.add(new AgentMetrics(j, agents));
             }
             saveMetrics(fileMetricsPrefix, i, config, metrics);
             metrics.clear();
