@@ -141,13 +141,14 @@ public class Simulation {
                         epidemicLayerStep(node, layers, agents, config);
                     }
                 }
-                // Update all nodes on the opinion layer
-                for (int a = 0; a < config.getnAgents(); a++) {
-                    var node = random.nextInt(config.getnAgents());
-                    if (config.isVirtualLayer()) {
-                        virtualLayerStep(node, layers, agents, config);
+                for (int n = 0; n < config.getnQVoterPerStep(); n++) {
+                    // Update all nodes on the opinion layer
+                    for (int a = 0; a < config.getnAgents(); a++) {/
+                        var node = random.nextInt(config.getnAgents());
+                        if (config.isVirtualLayer()) {
+                            virtualLayerStep(node, layers, agents, config);
+                        }
                     }
-
                 }
                 if (j % config.getnSaveSteps() == 0)
                     metrics.add(new AgentMetrics(j, agents));
