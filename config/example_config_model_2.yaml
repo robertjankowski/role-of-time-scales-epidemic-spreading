@@ -13,7 +13,7 @@ qVoterParameters:
   q: 6
 epidemicLayerParameters:
   beta: 0.1
-  zeta: 0.5 # attitude to get a vaccine
+  zeta: 0.5 # attitude towards vaccination
   alpha: 0.9 # effectiveness of the vaccination
   gamma: 0.5
   mu: 0.9
@@ -36,3 +36,5 @@ firstParameterRange:
 secondParameterRange: null
 linksRemoval: false
 nQVoterPerStep: 1
+vaccinationFraction: 0.0
+neglectNeighboursPiS: false

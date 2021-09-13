@@ -116,7 +116,7 @@ public class Simulation {
         }
     }
 
-    public void     runModel(String fileMetricsPrefix, SimulationConfig config) {
+    public void runModel(String fileMetricsPrefix, SimulationConfig config) {
         List<AgentMetrics> metrics = new LinkedList<>();
         for (int i = 0; i < config.getnRuns(); i++) {
             int additionalVirtualLinks =
@@ -128,6 +128,7 @@ public class Simulation {
                     config.getPositiveOpinionFraction(),
                     config.getProPisFraction(),
                     config.getInfectedFraction(),
+                    config.getVaccinatedFraction(),
                     config.getFractionIllnessA(),
                     config.getFractionIllnessB(),
                     config.getMaxInfectedTimeMean(),
@@ -229,6 +230,12 @@ public class Simulation {
     }
 
     private void voterActConformity(int node, Layer virtualLayer, List<Agent> agents, SimulationConfig config) {
+        var agent = agents.get(node);
+        if (config.isNeglectNeighboursPiS()) {
+            // If someone is a PiS voter, she/he does not consider the group influence
+            if (agent.getPoliticalSupport() == 1)
+                return;
+        }
         int q = config.getqVoterParameters().getQ();
         var neighbours = Graphs.neighborListOf(virtualLayer, node).stream()
                 .collect(RandomCollectors.toImprovedLazyShuffledStream())
@@ -240,7 +247,6 @@ public class Simulation {
         for (int neighbour : neighbours) {
             totalOpinion += agents.get(neighbour).getOpinion();
         }
-        var agent = agents.get(node);
         if (totalOpinion == q) {
             agent.setOpinion(1);
             agents.set(node, agent);

@@ -36,6 +36,9 @@ public class SimulationConfig {
     private ParametersRange secondParameterRange;
     private int nQVoterPerStep;
     private boolean isLinksRemoval;
+    private double vaccinatedFraction;
+
+    private boolean isNeglectNeighboursPiS;
 
     public static SimulationConfig loadConfig(String filePath) throws IOException {
         var objectMapper = new ObjectMapper(new YAMLFactory());
@@ -71,6 +74,8 @@ public class SimulationConfig {
         this.secondParameterRange = other.secondParameterRange;
         this.nQVoterPerStep = other.nQVoterPerStep;
         this.isLinksRemoval = other.isLinksRemoval;
+        this.vaccinatedFraction = other.vaccinatedFraction;
+        this.isNeglectNeighboursPiS = other.isNeglectNeighboursPiS;
     }
 
     public int getnAgents() {
@@ -273,6 +278,22 @@ public class SimulationConfig {
         this.pisVaccinationCorrelation = pisVaccinationCorrelation;
     }
 
+    public double getVaccinatedFraction() {
+        return vaccinatedFraction;
+    }
+
+    public void setVaccinatedFraction(double vaccinatedFraction) {
+        this.vaccinatedFraction = vaccinatedFraction;
+    }
+
+    public boolean isNeglectNeighboursPiS() {
+        return isNeglectNeighboursPiS;
+    }
+
+    public void setNeglectNeighboursPiS(boolean neglectNeighboursPiS) {
+        isNeglectNeighboursPiS = neglectNeighboursPiS;
+    }
+
     @Override
     public String toString() {
         return "SimulationConfig{" +
@@ -301,6 +322,8 @@ public class SimulationConfig {
                 ", secondParameterRange=" + secondParameterRange +
                 ", nQVoterPerStep=" + nQVoterPerStep +
                 ", isLinksRemoval=" + isLinksRemoval +
+                ", vaccinatedFraction=" + vaccinatedFraction +
+                ", isNeglectNeighboursPiS=" + isNeglectNeighboursPiS +
                 '}';
     }
 
