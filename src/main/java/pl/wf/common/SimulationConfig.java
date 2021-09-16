@@ -34,6 +34,7 @@ public class SimulationConfig {
     private String outputFolder;
     private ParametersRange firstParameterRange;
     private ParametersRange secondParameterRange;
+    private ParametersRange thirdParameterRange;
     private int nQVoterPerStep;
     private boolean isLinksRemoval;
     private double vaccinatedFraction;
@@ -72,6 +73,7 @@ public class SimulationConfig {
         this.outputFolder = other.outputFolder;
         this.firstParameterRange = other.firstParameterRange;
         this.secondParameterRange = other.secondParameterRange;
+        this.thirdParameterRange = other.thirdParameterRange;
         this.nQVoterPerStep = other.nQVoterPerStep;
         this.isLinksRemoval = other.isLinksRemoval;
         this.vaccinatedFraction = other.vaccinatedFraction;
@@ -294,6 +296,14 @@ public class SimulationConfig {
         isNeglectNeighboursPiS = neglectNeighboursPiS;
     }
 
+    public ParametersRange getThirdParameterRange() {
+        return thirdParameterRange;
+    }
+
+    public void setThirdParameterRange(ParametersRange thirdParameterRange) {
+        this.thirdParameterRange = thirdParameterRange;
+    }
+
     @Override
     public String toString() {
         return "SimulationConfig{" +
@@ -320,6 +330,7 @@ public class SimulationConfig {
                 ", outputFolder='" + outputFolder + '\'' +
                 ", firstParameterRange=" + firstParameterRange +
                 ", secondParameterRange=" + secondParameterRange +
+                ", thirdParameterRange=" + thirdParameterRange +
                 ", nQVoterPerStep=" + nQVoterPerStep +
                 ", isLinksRemoval=" + isLinksRemoval +
                 ", vaccinatedFraction=" + vaccinatedFraction +

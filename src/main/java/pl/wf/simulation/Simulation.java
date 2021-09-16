@@ -1,5 +1,11 @@
 package pl.wf.simulation;
 
+import me.tongfei.progressbar.ProgressBar;
+import me.tongfei.progressbar.ProgressBarBuilder;
+import me.tongfei.progressbar.ProgressBarStyle;
+import org.apache.commons.io.FileUtils;
+import org.jgrapht.Graphs;
+import org.jgrapht.alg.util.Pair;
 import pl.wf.common.SimulationConfig;
 import pl.wf.common.agent.Agent;
 import pl.wf.common.agent.AgentMetrics;
@@ -8,31 +14,21 @@ import pl.wf.common.network.Initializer;
 import pl.wf.common.network.Layer;
 import pl.wf.common.network.Network;
 import pl.wf.common.parameters.ParameterType;
-import me.tongfei.progressbar.ProgressBar;
-import me.tongfei.progressbar.ProgressBarBuilder;
-import me.tongfei.progressbar.ProgressBarStyle;
-import org.apache.commons.io.FileUtils;
-import org.jgrapht.Graphs;
-import org.jgrapht.alg.util.Pair;
 import pl.wf.utils.RandomCollectors;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.*;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 public class Simulation {
     private SimulationConfig config;
     private Random random;
-    private static final int N_THREADS = Runtime.getRuntime().availableProcessors();
-    private static final ExecutorService executor = Executors.newFixedThreadPool(N_THREADS);
-    private static final ReentrantLock lock = new ReentrantLock();
 
     public Simulation(String configPath) {
         try {
@@ -45,7 +41,7 @@ public class Simulation {
         }
     }
 
-    public void runAll(String fileMetricsPrefix, boolean isMultithreaded) throws InterruptedException {
+    public void runAll(String fileMetricsPrefix) throws InterruptedException {
         if (config.getFirstParameterRange() == null && config.getSecondParameterRange() == null) {
             runModel(fileMetricsPrefix, config);
         } else if (config.getFirstParameterRange() != null && config.getSecondParameterRange() == null) {
@@ -60,32 +56,31 @@ public class Simulation {
             // run grid search
             var firstParameterRange = config.getFirstParameterRange().getParametersRange();
             var secondParameterRange = config.getSecondParameterRange().getParametersRange();
-            var pbb = new ProgressBarBuilder()
-                    .setStyle(ProgressBarStyle.COLORFUL_UNICODE_BLOCK)
-                    .setTaskName("Running experiment: " + config.getFirstParameterRange().getType() +
-                            " and " + config.getSecondParameterRange().getType());
-            var vals = new ArrayList<Pair<Double, Double>>();
-            for (double x : ProgressBar.wrap(firstParameterRange, pbb)) {
-                for (double y : secondParameterRange) {
-                    if (isMultithreaded) {
-                        vals.add(Pair.of(x, y));
-                    } else {
+
+            if (config.getThirdParameterRange() == null) {
+                var pbb = new ProgressBarBuilder()
+                        .setStyle(ProgressBarStyle.COLORFUL_UNICODE_BLOCK)
+                        .setTaskName("Running experiment: " + config.getFirstParameterRange().getType() +
+                                " and " + config.getSecondParameterRange().getType());
+                for (double x : ProgressBar.wrap(firstParameterRange, pbb)) {
+                    for (double y : secondParameterRange) {
                         updateParameter(x, config.getFirstParameterRange().getType(), config);
                         updateParameter(y, config.getSecondParameterRange().getType(), config);
                         runModel(fileMetricsPrefix, config);
                     }
                 }
-            }
-
-            if (isMultithreaded) {
-                var tasks = vals.stream()
-                        .map(p -> new SetAndRun(p.getFirst(), p.getSecond(), fileMetricsPrefix, config))
-                        .collect(Collectors.toList());
-                CompletableFuture<?>[] futures = tasks.stream()
-                        .map(task -> CompletableFuture.runAsync(task, executor))
-                        .toArray(CompletableFuture[]::new);
-                CompletableFuture.allOf(futures).join();
-                executor.shutdown();
+            } else {
+                var thirdParameterRange = config.getThirdParameterRange().getParametersRange();
+                for (double x : firstParameterRange) {
+                    for (double y : secondParameterRange) {
+                        for (double z : thirdParameterRange) {
+                            updateParameter(x, config.getFirstParameterRange().getType(), config);
+                            updateParameter(y, config.getSecondParameterRange().getType(), config);
+                            updateParameter(z, config.getThirdParameterRange().getType(), config);
+                            runModel(fileMetricsPrefix, config);
+                        }
+                    }
+                }
             }
         }
     }
@@ -97,22 +92,6 @@ public class Simulation {
         for (double val : ProgressBar.wrap(parametersRange, pbb)) {
             updateParameter(val, type, config);
             runModel(fileMetricsPrefix, config);
-        }
-    }
-
-    class SetAndRun implements Runnable {
-        private final SimulationConfig newConfig;
-        private final String fileMetricsPrefix;
-
-        public SetAndRun(double x, double y, String fileMetricsPrefix, SimulationConfig config) {
-            this.fileMetricsPrefix = fileMetricsPrefix;
-            this.newConfig = new SimulationConfig(config);
-            updateParameter(x, newConfig.getFirstParameterRange().getType(), newConfig);
-            updateParameter(y, newConfig.getSecondParameterRange().getType(), newConfig);
-        }
-
-        public void run() {
-            runModel(fileMetricsPrefix, newConfig);
         }
     }
 
@@ -174,12 +153,12 @@ public class Simulation {
             case positiveOpinionFraction -> config.setPositiveOpinionFraction(x);
             case networkP -> config.setNetworkP(x);
             case pisProFraction -> config.setProPisFraction(x);
+            case nQVoterPerStep -> config.setnQVoterPerStep((int) x);
         }
     }
 
     private void saveMetrics(String prefix, int nRun, SimulationConfig config, List<AgentMetrics> metrics) {
         try {
-            lock.lock();
             var convertedMetrics = metrics.stream().map(AgentMetrics::toString).collect(Collectors.toList());
             convertedMetrics.add(0,
                     "step\tmeanOpinion\tsusceptibleRate\tvaccinationRate\tinfectedRate\tquarantinedRate\trecoveredRate\tdeadRate");
@@ -189,8 +168,6 @@ public class Simulation {
         } catch (IOException e) {
             e.printStackTrace();
             System.err.println("Unable to write out names");
-        } finally {
-            lock.unlock();
         }
     }
 
@@ -204,21 +181,10 @@ public class Simulation {
                 "_QVOTER=" + config.getqVoterParameters() +
                 "_PIS=" + config.getProPisFraction() +
                 "_EPIDEMIC=" + config.getEpidemicLayerParameters() +
-                "_I_TIME_MEAN=" + config.getMaxInfectedTimeMean() +
-                "_I_TIME_STD=" + config.getMaxInfectedTimeStd() +
+                "_QVOTERSTEPS=" + config.getnQVoterPerStep() +
+                //"_I_TIME_MEAN=" + config.getMaxInfectedTimeMean() +
+                //"_I_TIME_STD=" + config.getMaxInfectedTimeStd() +
                 "_NRUN=" + nRun + ".tsv";
-    }
-
-    private void singleStep(int node, Pair<Layer, Layer> layers, List<Agent> agents, SimulationConfig config) {
-        if (config.isVirtualLayer()) {
-            // Assumption: an agent could send more messages than meet people in one timestamp.
-            for (int i = 0; i < config.getnQVoterPerStep(); i++) {
-                virtualLayerStep(node, layers, agents, config);
-            }
-        }
-        if (config.isEpidemicLayer()) {
-            epidemicLayerStep(node, layers, agents, config);
-        }
     }
 
     private void virtualLayerStep(int node, Pair<Layer, Layer> layers, List<Agent> agents, SimulationConfig config) {
@@ -304,7 +270,6 @@ public class Simulation {
             case VACCINATED -> {
                 if (random.nextDouble() < getCombinedAlphaProbability(agent)) { // V -> I
                     agent.setState(AgentState.INFECTED);
-                    break;
                 }
             }
             case INFECTED -> {
