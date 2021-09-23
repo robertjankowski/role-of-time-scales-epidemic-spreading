@@ -39,3 +39,4 @@ linksRemoval: false
 nQVoterPerStep: 1
 vaccinationFraction: 0.0
 neglectNeighboursPiS: false
+filterBubble: false

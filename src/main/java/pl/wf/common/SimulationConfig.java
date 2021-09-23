@@ -37,9 +37,9 @@ public class SimulationConfig {
     private ParametersRange thirdParameterRange;
     private int nQVoterPerStep;
     private boolean isLinksRemoval;
-    private double vaccinatedFraction;
-
+    private double vaccinationFraction;
     private boolean isNeglectNeighboursPiS;
+    private boolean isFilterBubble;
 
     public static SimulationConfig loadConfig(String filePath) throws IOException {
         var objectMapper = new ObjectMapper(new YAMLFactory());
@@ -76,8 +76,9 @@ public class SimulationConfig {
         this.thirdParameterRange = other.thirdParameterRange;
         this.nQVoterPerStep = other.nQVoterPerStep;
         this.isLinksRemoval = other.isLinksRemoval;
-        this.vaccinatedFraction = other.vaccinatedFraction;
+        this.vaccinationFraction = other.vaccinationFraction;
         this.isNeglectNeighboursPiS = other.isNeglectNeighboursPiS;
+        this.isFilterBubble = other.isFilterBubble;
     }
 
     public int getnAgents() {
@@ -280,12 +281,12 @@ public class SimulationConfig {
         this.pisVaccinationCorrelation = pisVaccinationCorrelation;
     }
 
-    public double getVaccinatedFraction() {
-        return vaccinatedFraction;
+    public double getVaccinationFraction() {
+        return vaccinationFraction;
     }
 
-    public void setVaccinatedFraction(double vaccinatedFraction) {
-        this.vaccinatedFraction = vaccinatedFraction;
+    public void setVaccinationFraction(double vaccinationFraction) {
+        this.vaccinationFraction = vaccinationFraction;
     }
 
     public boolean isNeglectNeighboursPiS() {
@@ -302,6 +303,14 @@ public class SimulationConfig {
 
     public void setThirdParameterRange(ParametersRange thirdParameterRange) {
         this.thirdParameterRange = thirdParameterRange;
+    }
+
+    public boolean isFilterBubble() {
+        return isFilterBubble;
+    }
+
+    public void setFilterBubble(boolean filterBubble) {
+        isFilterBubble = filterBubble;
     }
 
     @Override
@@ -333,8 +342,9 @@ public class SimulationConfig {
                 ", thirdParameterRange=" + thirdParameterRange +
                 ", nQVoterPerStep=" + nQVoterPerStep +
                 ", isLinksRemoval=" + isLinksRemoval +
-                ", vaccinatedFraction=" + vaccinatedFraction +
+                ", vaccinatedFraction=" + vaccinationFraction +
                 ", isNeglectNeighboursPiS=" + isNeglectNeighboursPiS +
+                ", isFilterBubble=" + isFilterBubble +
                 '}';
     }
 

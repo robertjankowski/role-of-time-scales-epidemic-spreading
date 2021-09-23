@@ -107,7 +107,7 @@ public class Simulation {
                     config.getPositiveOpinionFraction(),
                     config.getProPisFraction(),
                     config.getInfectedFraction(),
-                    config.getVaccinatedFraction(),
+                    config.getVaccinationFraction(),
                     config.getFractionIllnessA(),
                     config.getFractionIllnessB(),
                     config.getMaxInfectedTimeMean(),
@@ -191,18 +191,64 @@ public class Simulation {
         if (random.nextDouble() < config.getqVoterParameters().getP()) {
             voterActNonConformity(node, agents, config);
         } else {
-            voterActConformity(node, layers.getSecond(), agents, config);
+            if (config.isFilterBubble()) {
+                voterActConformityFilterBubble(node, layers.getSecond(), agents, config);
+            } else {
+                voterActConformity(node, layers.getSecond(), agents, config);
+            }
+        }
+    }
+
+    private void voterActConformityFilterBubble(int node, Layer virtualLayer, List<Agent> agents, SimulationConfig config) {
+        var agent = agents.get(node);
+        int q = config.getqVoterParameters().getQ();
+        if (config.isNeglectNeighboursPiS()) {
+            // If someone is a PiS voter, she/he does not consider the group influence
+            if (agent.getPoliticalSupport() == 1) {
+                return;
+            }
+        }
+        if (config.isFilterBubble()) {
+            if (agent.getOpinion() == 1) {
+                var countPositiveNeighbours = Graphs.neighborListOf(virtualLayer, node).stream()
+                        .filter(o -> o == 1)
+                        .count();
+                // Positive agent does not change his opinion if he has enough positive neighbours
+                if (countPositiveNeighbours < q) {
+                    // Otherwise, check if he has enough negative neighbours to change his opinion
+                    //if (countNegativeNeighbours >= q) {
+                    //    agent.setOpinion(-1);
+                    //    agents.set(node, agent);
+                    //}
+                    voterActConformity(node, virtualLayer, agents, config);
+                }
+            } else if (agent.getOpinion() == -1) {
+                var countNegativeNeighbours = Graphs.neighborListOf(virtualLayer, node).stream()
+                        .filter(o -> o == -1)
+                        .count();
+                // Negative agent does not change his opinion if he has enough negative neighbours
+                if (countNegativeNeighbours < q) {
+                    // Otherwise, check if he has enough positive neighbours to change his opinion
+                    //if (countPositiveNeighbours >= q) {
+                    //    agent.setOpinion(1);
+                    //   agents.set(node, agent);
+                    //}
+                    voterActConformity(node, virtualLayer, agents, config);
+                }
+            }
         }
     }
 
     private void voterActConformity(int node, Layer virtualLayer, List<Agent> agents, SimulationConfig config) {
         var agent = agents.get(node);
+        int q = config.getqVoterParameters().getQ();
         if (config.isNeglectNeighboursPiS()) {
             // If someone is a PiS voter, she/he does not consider the group influence
-            if (agent.getPoliticalSupport() == 1)
+            if (agent.getPoliticalSupport() == 1) {
                 return;
+            }
         }
-        int q = config.getqVoterParameters().getQ();
+
         var neighbours = Graphs.neighborListOf(virtualLayer, node).stream()
                 .collect(RandomCollectors.toImprovedLazyShuffledStream())
                 .limit(q)

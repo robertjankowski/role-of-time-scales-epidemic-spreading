@@ -24,7 +24,7 @@ public class Initializer {
                                                double positiveOpinionFraction,
                                                double proPiSFraction,
                                                double infectedFraction,
-                                               double vaccinatedFraction,
+                                               double vaccinationFraction,
                                                double fractionIllnessA,
                                                double fractionIllnessB,
                                                double maxInfectedTimeMean,
@@ -64,7 +64,7 @@ public class Initializer {
                 // Ax * (1 - y) = x -> A = 1 / (1 - y)
                 // x - vaccinated fraction
                 // y - infected fraction
-                var rescaledVaccinatedFraction = 1 / (1 - infectedFraction) * vaccinatedFraction;
+                var rescaledVaccinatedFraction = 1 / (1 - infectedFraction) * vaccinationFraction;
                 if (r.nextDouble() < rescaledVaccinatedFraction)
                     agent.setState(AgentState.VACCINATED);
             }

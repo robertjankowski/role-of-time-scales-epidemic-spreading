@@ -4,7 +4,7 @@ import pl.wf.simulation.Simulation;
 
 public class Main {
     public static void main(String[] args) throws InterruptedException {
-        Simulation simulation = new Simulation("config/results_remove_links_parameters_beta_range_different_dynamics_qvotersteps.yaml");
+        Simulation simulation = new Simulation("config/test_filter_bubbles.yaml");
         simulation.runAll("on");
     }
 }
