@@ -1,4 +1,5 @@
 import yaml
+import time
 import os
 import subprocess
 import sys
@@ -6,7 +7,7 @@ import tempfile
 
 def run_model(prefix, config_file):
     command = f"""
-        nohup mvn compile exec:java -Dexec.mainClass="pl.wf.Main" -Dexec.args="{config_file} {prefix} &"
+        nohup ./run.sh {config_file} {prefix} &
     """.strip()
     print(command)
     os.system(command)
@@ -48,7 +49,7 @@ def run_grid_search_with_params(config, params, prefix):
         with open(tmp_config, 'w') as f:
             yaml.dump(config, f)
         run_model(prefix, tmp_config)
-
+        time.sleep(2)
 
 if __name__ == "__main__":
     if len(sys.argv) != 4:
