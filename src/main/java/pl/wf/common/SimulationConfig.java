@@ -40,6 +40,7 @@ public class SimulationConfig {
     private double vaccinationFraction;
     private boolean isNeglectNeighboursPiS;
     private boolean isFilterBubble;
+    private boolean isDegreeCorrelated;
 
     public static SimulationConfig loadConfig(String filePath) throws IOException {
         var objectMapper = new ObjectMapper(new YAMLFactory());
@@ -79,6 +80,7 @@ public class SimulationConfig {
         this.vaccinationFraction = other.vaccinationFraction;
         this.isNeglectNeighboursPiS = other.isNeglectNeighboursPiS;
         this.isFilterBubble = other.isFilterBubble;
+        this.isDegreeCorrelated = other.isDegreeCorrelated;
     }
 
     public int getnAgents() {
@@ -313,6 +315,14 @@ public class SimulationConfig {
         isFilterBubble = filterBubble;
     }
 
+    public boolean isDegreeCorrelated() {
+        return isDegreeCorrelated;
+    }
+
+    public void setDegreeCorrelated(boolean degreeCorrelated) {
+        isDegreeCorrelated = degreeCorrelated;
+    }
+
     @Override
     public String toString() {
         return "SimulationConfig{" +
@@ -342,9 +352,10 @@ public class SimulationConfig {
                 ", thirdParameterRange=" + thirdParameterRange +
                 ", nQVoterPerStep=" + nQVoterPerStep +
                 ", isLinksRemoval=" + isLinksRemoval +
-                ", vaccinatedFraction=" + vaccinationFraction +
+                ", vaccinationFraction=" + vaccinationFraction +
                 ", isNeglectNeighboursPiS=" + isNeglectNeighboursPiS +
                 ", isFilterBubble=" + isFilterBubble +
+                ", isDegreeCorrelated=" + isDegreeCorrelated +
                 '}';
     }
 

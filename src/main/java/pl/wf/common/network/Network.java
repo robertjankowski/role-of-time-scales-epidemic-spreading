@@ -1,14 +1,19 @@
 package pl.wf.common.network;
 
+import org.apache.commons.math3.stat.descriptive.moment.StandardDeviation;
 import org.jgrapht.alg.util.Pair;
 import org.jgrapht.generate.BarabasiAlbertGraphGenerator;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.util.SupplierUtil;
 import pl.wf.utils.Utils;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class Network {
 
@@ -70,7 +75,53 @@ public class Network {
         return new Pair<>(l1, l2);
     }
 
+    public static List<Integer> getDegrees(Layer l, List<Integer> nodeMapping) {
+        var vertices = l.vertexSet().stream().sorted().collect(Collectors.toList());
+        List<Integer> degrees = new ArrayList<>();
+        for (Integer n : nodeMapping) {
+            var currentNode = vertices.get(n);
+            var currentDegree = l.degreeOf(currentNode);
+            degrees.add(currentDegree);
+        }
+        return degrees;
+    }
+
     public static List<Integer> getDegrees(Layer l) {
-        return l.vertexSet().stream().map(l::degreeOf).collect(Collectors.toList());
+        var vertices = l.vertexSet().stream().sorted().collect(Collectors.toList());
+        var nodeMapping = getDefaultNodeMapping(vertices.size());
+        return getDegrees(l, nodeMapping);
+    }
+
+    public static double pearsonCorrelation(Pair<Layer, Layer> layers, List<Integer> nodeMapping) {
+        var l1 = layers.getFirst();
+        var l2 = layers.getSecond();
+
+        var d1 = getDegrees(l1).stream().mapToDouble(i -> i).toArray();
+        var d2 = getDegrees(l2, nodeMapping).stream().mapToDouble(i -> i).toArray();
+        var d1Mean = Arrays.stream(d1).average().getAsDouble();
+        var d2Mean = Arrays.stream(d2).average().getAsDouble();
+
+        StandardDeviation sd = new StandardDeviation();
+        var sd1 = sd.evaluate(d1);
+        var sd2 = sd.evaluate(d2);
+
+        double d12Mean = 0;
+        for (int i = 0; i < d1.length; i++)
+            d12Mean += d1[i] * d2[i];
+        d12Mean /= d1.length;
+        var top = d12Mean - d1Mean * d2Mean;
+        var bottom = sd1 * sd2;
+        return top / bottom;
+    }
+
+    public static List<Integer> createNodeMapping(int size, boolean degreeCorrelated) {
+        var mapping = getDefaultNodeMapping(size);
+        if (!degreeCorrelated)
+            Collections.shuffle(mapping);
+        return mapping;
+    }
+
+    public static List<Integer> getDefaultNodeMapping(int size) {
+        return IntStream.range(0, size).boxed().collect(Collectors.toList());
     }
 }

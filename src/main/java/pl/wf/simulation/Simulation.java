@@ -102,6 +102,7 @@ public class Simulation {
                     getnAdditionalLinks(config.getnAgents(), config.getAdditionalLinksFraction(), config.getNetworkM());
             var layers = Network.createBilayerNetwork(
                     config.getnAgents(), additionalVirtualLinks, config.getNetworkM(), config.getNetworkP());
+            var nodeMapping = Network.createNodeMapping(config.getnAgents(), config.isDegreeCorrelated());
             var agents = Initializer.initializeAgents(
                     config.getnAgents(),
                     config.getPositiveOpinionFraction(),
@@ -115,17 +116,18 @@ public class Simulation {
             int stepsByAgents = config.getnSteps() / config.getnAgents();
             for (int j = 0; j < stepsByAgents; j++) {
                 // Update all nodes on the epidemic layer
-                for (int a = 0; a < config.getnAgents(); a++) {
-                    var node = random.nextInt(config.getnAgents());
-                    if (config.isEpidemicLayer()) {
-                        epidemicLayerStep(node, layers, agents, config);
-                    }
-                }
-                for (int n = 0; n < config.getnQVoterPerStep(); n++) {
-                    // Update all nodes on the opinion layer
+                if (config.isEpidemicLayer()) {
                     for (int a = 0; a < config.getnAgents(); a++) {
                         var node = random.nextInt(config.getnAgents());
-                        if (config.isVirtualLayer()) {
+                        var mappedNode = nodeMapping.get(node);
+                        epidemicLayerStep(mappedNode, layers, agents, config);
+                    }
+                }
+                // Update all nodes on the opinion layer
+                if (config.isVirtualLayer()) {
+                    for (int n = 0; n < config.getnQVoterPerStep(); n++) {
+                        for (int a = 0; a < config.getnAgents(); a++) {
+                            var node = random.nextInt(config.getnAgents());
                             virtualLayerStep(node, layers, agents, config);
                         }
                     }
