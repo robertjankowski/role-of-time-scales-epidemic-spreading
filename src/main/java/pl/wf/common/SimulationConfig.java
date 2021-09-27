@@ -79,7 +79,6 @@ public class SimulationConfig {
         this.isLinksRemoval = other.isLinksRemoval;
         this.vaccinationFraction = other.vaccinationFraction;
         this.isNeglectNeighboursPiS = other.isNeglectNeighboursPiS;
-        this.isFilterBubble = other.isFilterBubble;
         this.isDegreeCorrelated = other.isDegreeCorrelated;
     }
 
@@ -307,14 +306,6 @@ public class SimulationConfig {
         this.thirdParameterRange = thirdParameterRange;
     }
 
-    public boolean isFilterBubble() {
-        return isFilterBubble;
-    }
-
-    public void setFilterBubble(boolean filterBubble) {
-        isFilterBubble = filterBubble;
-    }
-
     public boolean isDegreeCorrelated() {
         return isDegreeCorrelated;
     }
@@ -354,7 +345,6 @@ public class SimulationConfig {
                 ", isLinksRemoval=" + isLinksRemoval +
                 ", vaccinationFraction=" + vaccinationFraction +
                 ", isNeglectNeighboursPiS=" + isNeglectNeighboursPiS +
-                ", isFilterBubble=" + isFilterBubble +
                 ", isDegreeCorrelated=" + isDegreeCorrelated +
                 '}';
     }
