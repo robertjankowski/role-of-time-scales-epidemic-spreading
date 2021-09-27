@@ -26,7 +26,7 @@ fractionIllnessA: 0.0
 fractionIllnessB: 0.0
 proPisFraction: 0.0 # do not use this!
 pisVaccinationCorrelation: 0.0
-outputFolder: simulations/heatmap_p_vs_q_nrun1_node_corr
+outputFolder: simulations/heatmap_p_vs_q_nrun1_node_no_corr
 firstParameterRange:
   start: 0.0
   end: 0.5
@@ -47,3 +47,4 @@ thirdParameterRange:
   type: nQVoterPerStep
 linksRemoval: true
 nQVoterPerStep: 1
+degreeCorrelated: false
