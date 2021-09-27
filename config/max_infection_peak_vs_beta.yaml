@@ -26,11 +26,11 @@ pisVaccinationCorrelation: 0.0
 infectedFraction: 0.1
 fractionIllnessA: 0.0
 fractionIllnessB: 0.0
-outputFolder: simulations/max_infection_peak_vs_beta
+outputFolder: simulations/max_infection_peak_vs_beta_low_beta
 firstParameterRange:
   start: 0.0
-  end: 1.0
-  count: 21
+  end: 0.5
+  count: 51
   vals: null
   type: beta
 secondParameterRange:
