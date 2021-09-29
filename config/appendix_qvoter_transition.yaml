@@ -1,7 +1,7 @@
 nAgents: 10000
 nSteps: 100
 nSaveSteps: 1
-nRuns: 10
+nRuns: 5
 networkP: 0.8
 networkM: 10
 additionalLinksFraction: 0.01
