@@ -6,7 +6,7 @@ networkP: 0.8
 networkM: 10
 additionalLinksFraction: 0.01
 virtualLayer: true
-epidemicLayer: true
+epidemicLayer: false
 comorbidities: false
 qVoterParameters:
   p: 0.2
@@ -30,15 +30,15 @@ outputFolder: simulations/appendix_qvoter_transition
 firstParameterRange:
   start: 0.0
   end: 0.5
-  count: 101
+  count: 51
   vals: null
   type: p
-secondParameterRange: null
-  # start: 0.0
-  # end: 1.0
-  # count: 21
-  # vals: null
-  # type: positiveOpinionFraction
+secondParameterRange:
+  start: 0.0
+  end: 1.0
+  count: 21
+  vals: [3000, 10000, 30000]
+  type: N
 thirdParameterRange: null
   # start: 0
   # end: 0
