@@ -9,7 +9,7 @@ virtualLayer: true
 epidemicLayer: true
 comorbidities: false
 qVoterParameters:
-  p: 0.5
+  p: 0.01
   q: 6
 epidemicLayerParameters:
   beta: 0.1
@@ -26,7 +26,7 @@ pisVaccinationCorrelation: 0.0
 infectedFraction: 0.1
 fractionIllnessA: 0.0
 fractionIllnessB: 0.0
-outputFolder: simulations/fig2_infection_rate_vs_posFrac_timescale_nruns10
+outputFolder: simulations/fig2_infection_rate_vs_posFrac_timescale_nruns10_new
 firstParameterRange:
   start: 0.0
   end: 0.5
