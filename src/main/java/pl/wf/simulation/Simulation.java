@@ -359,6 +359,6 @@ public class Simulation {
      * @return fraction of total edges in BA network
      */
     private int getnAdditionalLinks(int size, double fractionAdditionalLinks, int m) {
-        return (int) (m * size * fractionAdditionalLinks);
+        return (int) (m * fractionAdditionalLinks * size);
     }
 }
