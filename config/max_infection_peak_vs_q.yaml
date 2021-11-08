@@ -1,7 +1,7 @@
 nAgents: 10000
 nSteps: 100
 nSaveSteps: 1
-nRuns: 50
+nRuns: 10
 networkP: 0.8
 networkM: 10
 additionalLinksFraction: 0.01
@@ -26,25 +26,25 @@ pisVaccinationCorrelation: 0.0
 infectedFraction: 0.1
 fractionIllnessA: 0.0
 fractionIllnessB: 0.0
-outputFolder: simulations/max_infection_peak_vs_q_nruns_50
+outputFolder: simulations/max_infection_peak_vs_beta_per_q_nruns_10
 firstParameterRange:
   start: 0.0
   end: 0.5
   count: 51
-  vals: [0.01, 0.1, 0.5]
+  vals: null
   type: beta
 secondParameterRange:
   start: 0
   end: 0
   count: 0
-  vals: [0.01, 0.05, 0.1, 0.3, 0.5]
-  type: p
-thirdParameterRange:
-  start: 0
-  end: 0
-  count: 0
   vals: [2, 3, 4, 5, 6, 7, 8, 9, 10]
   type: q
+thirdParameterRange: null
+#  start: 0
+#  end: 0
+#  count: 0
+#  vals: [0.01, 0.1, 0.5]
+#  type: p
 linksRemoval: false
 nQVoterPerStep: 1
 vaccinationFraction: 0.0
