@@ -14,6 +14,12 @@ model where two distinct processes occur. The question arises of how to properly
 they should possess equal or disparate time scales. This paper highlights the impact of different time scales of opinion
 dynamics on epidemic spreading, focusing on the time and the peak of infection.
 
+![](plots/paper/multiplex.png)
+Representation of the opinion-epidemic model. The upper (opinion) layer considers dynamics of opinion, and nodes possess
+two possible states: positive (+1) or negative (-1). This layer also contains additional connections between agents. The
+lower (epidemic) layer supports the spread of disease. The nodes are the same agents as in the opinion layer, but their
+states here can be either (S) susceptible, (I) infected, (Q) quarantined, (D) deceased or (R) recovered.
+
 ### Results
 
 The whole picture of the interplay between opinion and epidemic layer and the role of time scales is shown in Figure~
